@@ -13,35 +13,55 @@ else if (!events.Any())
 }
 else
 {
-    <ul>
+    <div class="event-container">
         @foreach (var evt in events)
         {
-            <li style="margin-bottom: 1em;">
-                <h3>@evt.Title</h3>
-                <p>@evt.Description</p>
-                <p><strong>Datum:</strong> @evt.Date.ToString("yyyy-MM-dd")</p>
-                <p><strong>Plats:</strong> @evt.Location</p>
-            </li>
+            <div class="event-card">
+                <h3>@ev.Name</h3>
+                <p>@ev.Description</p>
+                <p><strong>Start:</strong> @ev.Start.ToString("yyyy-MM-dd HH:mm")</p>
+                <p><strong>Slut:</strong> @ev.End.ToString("yyyy-MM-dd HH:mm")</p>
+                <p><strong>Max deltagare:</strong> @ev.MaxAttendees</p>
+            </div>
         }
-    </ul>
+    </div>
 }
 
 @code {
-    private List<Event> events;
+    private List<Event> events = new();
 
-    protected override async Task OnInitializedAsync()
+   protected override async Task OnInitializedAsync()
+{
+    try
     {
-        
-        events = await Http.GetFromJsonAsync<List<Event>>("api/events");
-    }
+        Console.WriteLine("🔄 Hämtar evenemang...");
+        var response = await Http.GetAsync("http://localhost:5235/events");
 
-    
+        if (response.IsSuccessStatusCode)
+        {
+            events = await response.Content.ReadFromJsonAsync<List<Event>>();
+            Console.WriteLine($"✅ {events.Count} evenemang hämtade!");
+        }
+        else
+        {
+            Console.WriteLine($"❌ Fel vid hämtning av evenemang: {response.StatusCode}");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Fel vid hämtning av evenemang: {ex.Message}");
+    }
+}
+
+
     public class Event
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
-        public string Location { get; set; }
+        public int Type { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public int MaxAttendees { get; set; }
     }
 }
