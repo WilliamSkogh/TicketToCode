@@ -1,0 +1,47 @@
+@page "/events"
+@inject HttpClient Http
+
+<h1>Kommande Evenemang</h1>
+
+@if (events == null)
+{
+    <p>Laddar evenemang...</p>
+}
+else if (!events.Any())
+{
+    <p>Inga evenemang att visa.</p>
+}
+else
+{
+    <ul>
+        @foreach (var evt in events)
+        {
+            <li style="margin-bottom: 1em;">
+                <h3>@evt.Title</h3>
+                <p>@evt.Description</p>
+                <p><strong>Datum:</strong> @evt.Date.ToString("yyyy-MM-dd")</p>
+                <p><strong>Plats:</strong> @evt.Location</p>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Event> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        events = await Http.GetFromJsonAsync<List<Event>>("api/events");
+    }
+
+    
+    public class Event
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime Date { get; set; }
+        public string Location { get; set; }
+    }
+}
