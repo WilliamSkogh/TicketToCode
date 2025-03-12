@@ -1,17 +1,14 @@
-<<<<<<< HEAD
-=======
 using TicketToCode.Api.Endpoints;
 using TicketToCode.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using TicketToCode.Core.Data;
 
->>>>>>> main
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Default mapping is /openapi/v1.json
 builder.Services.AddOpenApi();
-<<<<<<< HEAD
-=======
 
 // PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -19,7 +16,6 @@ builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 
->>>>>>> main
 builder.Services.AddSingleton<IDatabase, Database>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -32,33 +28,26 @@ builder.Services.AddAuthentication("Cookies")
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
-// ✅ Flytta CORS-konfigurationen hit
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowBlazor",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// ✅ Flytta `UseCors` HIT, före autentisering och endpoints
-app.UseCors("AllowBlazor");
-
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+
+    // Todo: consider scalar? https://youtu.be/Tx49o-5tkis?feature=shared
+    app.UseSwaggerUI( options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
         options.DefaultModelsExpandDepth(-1);
     });
 }
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map all endpoints
 app.MapEndpoints<Program>();
