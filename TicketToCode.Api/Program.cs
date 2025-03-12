@@ -1,7 +1,25 @@
+<<<<<<< HEAD
+=======
+using TicketToCode.Api.Endpoints;
+using TicketToCode.Api.Services;
+using Microsoft.EntityFrameworkCore;
+using TicketToCode.Core.Data;
+
+>>>>>>> main
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddOpenApi();
+<<<<<<< HEAD
+=======
+
+// PostgreSQL
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+
+>>>>>>> main
 builder.Services.AddSingleton<IDatabase, Database>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
