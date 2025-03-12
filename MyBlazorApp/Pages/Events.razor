@@ -17,11 +17,11 @@ else
         @foreach (var evt in events)
         {
             <div class="event-card">
-                <h3>@ev.Name</h3>
-                <p>@ev.Description</p>
-                <p><strong>Start:</strong> @ev.Start.ToString("yyyy-MM-dd HH:mm")</p>
-                <p><strong>Slut:</strong> @ev.End.ToString("yyyy-MM-dd HH:mm")</p>
-                <p><strong>Max deltagare:</strong> @ev.MaxAttendees</p>
+                <h3>@evt.Name</h3>
+                <p>@evt.Description</p>
+                <p><strong>Start:</strong> @evt.Start.ToString("yyyy-MM-dd HH:mm")</p>
+                <p><strong>Slut:</strong> @evt.End.ToString("yyyy-MM-dd HH:mm")</p>
+                <p><strong>Max deltagare:</strong> @evt.MaxAttendees</p>
             </div>
         }
     </div>

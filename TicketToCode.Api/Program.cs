@@ -1,14 +1,7 @@
-using TicketToCode.Api.Endpoints;
-using TicketToCode.Api.Services;
-using TicketToCode.Core.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-// Default mapping is /openapi/v1.json
+// Add services
 builder.Services.AddOpenApi();
- 
 builder.Services.AddSingleton<IDatabase, Database>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -21,29 +14,35 @@ builder.Services.AddAuthentication("Cookies")
         options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
-builder.Services.AddAuthorization();
+// ✅ Flytta CORS-konfigurationen hit
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ✅ Flytta `UseCors` HIT, före autentisering och endpoints
+app.UseCors("AllowBlazor");
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    // Todo: consider scalar? https://youtu.be/Tx49o-5tkis?feature=shared
-    app.UseSwaggerUI( options =>
+    app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
         options.DefaultModelsExpandDepth(-1);
     });
 }
 
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-
 // Map all endpoints
 app.MapEndpoints<Program>();
 
 app.Run();
-
