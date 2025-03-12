@@ -53,4 +53,3 @@ app.UseAuthorization();
 app.MapEndpoints<Program>();
 
 app.Run();
-
