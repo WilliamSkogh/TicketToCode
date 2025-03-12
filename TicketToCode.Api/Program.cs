@@ -1,5 +1,6 @@
 using TicketToCode.Api.Endpoints;
 using TicketToCode.Api.Services;
+using Microsoft.EntityFrameworkCore;
 using TicketToCode.Core.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // Default mapping is /openapi/v1.json
 builder.Services.AddOpenApi();
- 
+
+// PostgreSQL
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+
 builder.Services.AddSingleton<IDatabase, Database>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
