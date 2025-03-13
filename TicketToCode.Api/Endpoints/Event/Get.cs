@@ -20,9 +20,9 @@ public class GetEvent : IEndpoint
     );
 
     //Logic
-    private static IResult Handle([AsParameters] Request request, IDatabase db)
+    private static IResult Handle([AsParameters] Request request, TicketToCodeDbContext db)
     {
-        var ev = db.Events.Find(ev => ev.Id == request.Id);
+        var ev = db.Events.FirstOrDefault(ev => ev.Id == request.Id);
 
         if (ev == null)
         {

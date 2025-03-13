@@ -1,4 +1,5 @@
-﻿namespace TicketToCode.Api.Endpoints;
+﻿using Microsoft.EntityFrameworkCore;
+namespace TicketToCode.Api.Endpoints;
 public class CreateEvent : IEndpoint
 {
     // Mapping
@@ -20,22 +21,20 @@ public class CreateEvent : IEndpoint
     public record Response(int id);
 
     //Logic
-    private static Ok<Response> Handle(Request request, IDatabase db)
+    private static async Task<Ok<Response>> Handle(Request request, TicketToCodeDbContext db)
     {
-        // Todo, use a better constructor that enforces setting all necessary properties
-        var ev = new Event();
+        var ev = new Event
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Type = request.Type,
+            StartTime = request.Start,
+            EndTime = request.End,
+            MaxAttendees = request.MaxAttendees
+        };
 
-        // Map request to an event-object
-        ev.Name = request.Name;
-        ev.Description = request.Description;
-        ev.Type = request.Type;
-        ev.StartTime = request.Start;
-        ev.EndTime = request.End;
-        ev.MaxAttendees = request.MaxAttendees;
-
-
-        // Todo: does this set id on ev-object?
-        db.Events.Add(ev); 
+        db.Events.Add(ev);
+        await db.SaveChangesAsync(); // ✅ Använd asynkron SaveChangesAsync()
 
         return TypedResults.Ok(new Response(ev.Id));
     }
