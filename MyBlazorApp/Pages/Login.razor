@@ -1,6 +1,8 @@
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
+
 
 <h3>Logga in</h3>
 
@@ -36,6 +38,6 @@
 
     private class AuthResponse
     {
-        public string Access_Token { get; set; }
+        public string? Access_Token { get; set; }
     }
 }
