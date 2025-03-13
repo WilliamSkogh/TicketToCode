@@ -1,0 +1,20 @@
+@page "/login"
+@inject HttpClient Http
+
+<h1>Logga in</h1>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red"> felaktigt lösenord eller användarnamn </p>
+}
+
+<input @bind="username" placeholder="Användarnamn">
+<input @bind="password" type="password" placeholder="Lösenord">
+<button> Logga in </button>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string errorMessage = "";
+}
+
