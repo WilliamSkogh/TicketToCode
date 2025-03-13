@@ -1,9 +1,39 @@
-@page "/Register"
+@page "/register"
 @inject HttpClient Http
+@inject NavigationManager Navigation
 
-<h3>Registrera dig här</h3>
+<h3>Registrera dig</h3>
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <p style="color:green">@successMessage</p>
+}
 @if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p style="color:red">Ej godkännt användarnamn eller löserord</p>
+    <p style="color:red">@errorMessage</p>
+}
+
+<input @bind="username" placeholder="Användarnamn" />
+<input @bind="password" type="password" />
+<button @onclick="RegisterUser">Registrera</button>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string successMessage = "";
+    private string errorMessage = "";
+
+    private async Task RegisterUser()
+    {
+        var response = await Http.PostAsJsonAsync("http://localhost:5235/api/auth/register", new { username, password });
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "Registrering lyckades! Gå till login-sidan.";
+        }
+        else
+        {
+            errorMessage = "Registrering misslyckades!";
+        }
+    }
 }
