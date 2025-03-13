@@ -1,0 +1,9 @@
+@page "/Register"
+@inject HttpClient Http
+
+<h3>Registrera dig här</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">Ej godkännt användarnamn eller löserord</p>
+}
