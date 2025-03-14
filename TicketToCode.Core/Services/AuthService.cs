@@ -45,4 +45,5 @@ public class AuthService : IAuthService
         _dbContext.Users.Add(user);
         return user;
     }
+    
 } 

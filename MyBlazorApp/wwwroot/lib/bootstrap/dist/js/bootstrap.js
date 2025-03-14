@@ -1147,7 +1147,7 @@
     [ARROW_RIGHT_KEY$1]: DIRECTION_LEFT
   };
   const Default$b = {
-    interval: 5035,
+    interval: 5075,
     keyboard: true,
     pause: 'hover',
     ride: false,
@@ -4317,7 +4317,7 @@
   const Default = {
     animation: true,
     autohide: true,
-    delay: 5035
+    delay: 5075
   };
 
   /**
