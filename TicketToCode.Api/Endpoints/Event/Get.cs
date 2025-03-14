@@ -19,11 +19,15 @@ public class GetEvent : IEndpoint
         int MaxAttendees
     );
 
-
     //Logic
-    private static Response Handle([AsParameters] Request request, IDatabase db)
+    private static IResult Handle([AsParameters] Request request, TicketToCodeDbContext db)
     {
-        var ev = db.Events.Find(ev => ev.Id == request.Id);
+        var ev = db.Events.FirstOrDefault(ev => ev.Id == request.Id);
+
+        if (ev == null)
+        {
+            return Results.NotFound($"Event with id {request.Id} not found");
+        }
 
         // map ev to response dto
         var response = new Response(
@@ -36,6 +40,6 @@ public class GetEvent : IEndpoint
             MaxAttendees: ev.MaxAttendees
             );
 
-        return response;
+        return Results.Ok(response);
     }
 }

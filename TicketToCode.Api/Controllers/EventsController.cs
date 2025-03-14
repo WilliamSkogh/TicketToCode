@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/events")]
 public class EventsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly TicketToCodeDbContext _context;//ändrat från ApplicationDbContext
 
-    public EventsController(ApplicationDbContext context)
+    public EventsController(TicketToCodeDbContext context) //ändrat från ApplicationDbContext
     {
         _context = context;
     }

@@ -18,17 +18,18 @@ public class GetAllEvents : IEndpoint
     );
 
     //Logic
-    private static List<Response> Handle(IDatabase db)
+    private static IResult Handle(TicketToCodeDbContext db)
     {
-        return db.Events
+        var events = db.Events
             .Select(item => new Response(
-                Id: item.Id,
-                Name: item.Name,
-                Description: item.Description,
-                Type: item.Type,
-                Start: item.StartTime,
-                End: item.EndTime,
-                MaxAttendees: item.MaxAttendees
+                item.Id,
+                item.Name,
+                item.Description,
+                item.Type,
+                item.StartTime,
+                item.EndTime,
+                item.MaxAttendees
             )).ToList();
+        return Results.Ok(events);
     }
 }
