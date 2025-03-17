@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TicketToCode.Core.Data;
 using TicketToCode.Core.Models;
 
@@ -6,7 +7,7 @@ namespace TicketToCode.Api.Services;
 public interface IAuthService
 {
     User? Login(string username, string password);
-    User? Register(string username, string password);
+    User? Register(string username, string password, string role);
 }
 
 // TODO: Implement better auth
@@ -33,16 +34,21 @@ public class AuthService : IAuthService
         return new User(user.Username, user.Role);
     }
 
-    public User? Register(string username, string password)
+    public User? Register(string username, string password, string role)
     {
         if (_dbContext.Users.Any(u => u.Username == username))
         {
             return null;
         }
 
-        var user = new User(username, BCrypt.Net.BCrypt.HashPassword(password));
+        var user = new User{
+            Username = username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            Role = role 
+            };
 
         _dbContext.Users.Add(user);
+        _dbContext.SaveChanges();
         return user;
     }
     
