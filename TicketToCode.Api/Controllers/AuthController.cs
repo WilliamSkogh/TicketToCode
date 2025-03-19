@@ -21,7 +21,7 @@ public IActionResult Login([FromBody] LoginModel model)
     }
 
     var user = _authService.Login(model.Username, model.Password, out string token);
-    if (user == null) // Kontrollera om användaren är null
+    if (user == null) 
     {
         return Unauthorized("Felaktigt användarnamn eller lösenord.");
     }
