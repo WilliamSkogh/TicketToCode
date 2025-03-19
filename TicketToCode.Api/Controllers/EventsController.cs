@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+namespace TicketToCode.Api.Controllers;
+
 [ApiController]
 [Route("api/events")]
 public class EventsController : ControllerBase

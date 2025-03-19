@@ -15,9 +15,9 @@ builder.Configuration.AddUserSecrets<Program>(); //user secrets
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Database connection string not found.");
 
-//DbContext Dependency Injection
+//DbContext Dependency Injection och migrations
 builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
-    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("TicketToCode.Api")));
+    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("TicketToCode.Core")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
