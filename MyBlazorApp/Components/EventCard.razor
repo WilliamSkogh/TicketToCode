@@ -1,0 +1,19 @@
+@code {
+[Parameter] public string Title { get; set; }
+[Parameter] public string Description { get; set; }
+[Parameter] public string ImageUrl { get; set; }
+[Parameter] public DateTime Start { get; set; }
+[Parameter] public DateTime End { get; set; }
+[Parameter] public int MaxAttendees { get; set; }
+[Parameter] public EventCallback OnRegister { get; set; } // För anmälningsknapp
+}
+
+<div class="event-card">
+    <div class="event-details">
+        <h3>@Title</h3>
+        <p>@Description</p>
+        <p><strong>Start:</strong> @Start.ToString("yyyy-MM-dd HH:mm")</p>
+        <p><strong>Slut:</strong> @End.ToString("yyyy-MM-dd HH:mm")</p>
+        <p><strong>Max deltagare:</strong> @MaxAttendees</p>
+    </div>
+</div>
