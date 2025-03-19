@@ -20,7 +20,8 @@ public class Login : IEndpoint
         IAuthService authService,
         HttpContext context)
     {
-        var result = authService.Login(request.Username, request.Password);
+        var result = authService.Login(request.Username, request.Password, out string token);
+
         if (result == null)
         {
             return TypedResults.NotFound("Invalid username or password");

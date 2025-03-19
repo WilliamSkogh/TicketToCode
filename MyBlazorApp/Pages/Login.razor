@@ -28,7 +28,7 @@
         {
             var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
             await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Access_Token);
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo("https://www.google.com", true);
         }
         else
         {
