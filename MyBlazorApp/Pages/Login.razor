@@ -22,7 +22,7 @@
 
     private async Task LoginUser()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:5235/api/auth/login", new { username, password });
+        var response = await Http.PostAsJsonAsync("http://localhost:5235/auth/login", new { username, password });
 
         if (response.IsSuccessStatusCode)
         {
