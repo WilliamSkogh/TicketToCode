@@ -23,5 +23,13 @@ namespace TicketToCode.Api.Controllers
         {
             return await _context.Tickets.ToListAsync();
         }
+        [HttpPost]
+        public async Task<ActionResult<Ticket>> BuyTicket(Ticket ticket)
+        {
+            _context.Tickets.Add(ticket);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(BuyTicket), new { id = ticket.Id }, ticket);
+        }
+
     }
 }

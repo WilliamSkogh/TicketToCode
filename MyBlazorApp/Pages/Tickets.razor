@@ -1,6 +1,23 @@
 @page "/tickets"
+@inject HttpClient Http
+
 <h3>Tickets</h3>
 
+<label for="ticketType">Hur många dagar?:</label>
+<select @bind="SelectedTicketType" id="ticketType">
+    <option value="1">1 dag</option>
+    <option value="2">2 dagar</option>
+    <option value="3">3 dagar</option>
+</select>
+
+@if (SelectedTicketType == 1)
+{
+    <label>
+        <input type="checkbox" @bind="@SelectedDays">
+    </label>
+}
+
+
 @code {
-    
+    private int SelectedTicketType = 1;
 }
