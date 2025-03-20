@@ -1,8 +1,10 @@
+@using Microsoft.AspNetCore.Components.Authorization
+
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h3>Logga in</h3>
 
@@ -27,8 +29,21 @@
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
-            await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Access_Token);
-            Navigation.NavigateTo("http://localhost:5075/admin", true);
+
+            if (result?.Access_Token != null)
+            {
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Access_Token);
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Access_Token);
+
+                // 🟢 Uppdatera authentication state direkt
+                await ((CustomAuthStateProvider)AuthStateProvider).AuthenticateUser();
+
+                Navigation.NavigateTo("/admin", true);
+            }
+            else
+            {
+                errorMessage = "Inloggningen misslyckades.";
+            }
         }
         else
         {
