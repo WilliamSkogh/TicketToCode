@@ -1,28 +1,39 @@
 @page "/admin"
-@attribute [Authorize(Roles = "Admin")]
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
 
-@if (!isLoggedIn)
-{
-    <p>Du måste vara inloggad för att hantera event.</p>
-    <button @onclick="Login">Logga in</button>
-}
-else
-{
-    <h3>Admin Panel</h3>
-    <p>Här kan du hantera event!</p>
-}
+<AuthorizeView>
+    <Authorized>
+        @if (isAdmin)
+        {
+            <h3>Admin Panel</h3>
+            <p>Här kan du hantera event!</p>
+        }
+        else
+        {
+            <p> Du har inte behörighet att se denna sida.</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p> Du måste vara inloggad för att hantera event.</p>
+        <button @onclick="Login">Logga in</button>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-    private bool isLoggedIn = false;
+    private bool isAdmin = false;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        isLoggedIn = authState.User.Identity.IsAuthenticated;
+        isAdmin = authState.User.IsInRole("Admin");
     }
 
     private void Login()
     {
-        NavigationManager.NavigateTo("/login");
+        Navigation.NavigateTo("/login");
     }
 }
