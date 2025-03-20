@@ -1,0 +1,28 @@
+@page "/admin"
+@attribute [Authorize(Roles = "Admin")]
+
+@if (!isLoggedIn)
+{
+    <p>Du måste vara inloggad för att hantera event.</p>
+    <button @onclick="Login">Logga in</button>
+}
+else
+{
+    <h3>Admin Panel</h3>
+    <p>Här kan du hantera event!</p>
+}
+
+@code {
+    private bool isLoggedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isLoggedIn = authState.User.Identity.IsAuthenticated;
+    }
+
+    private void Login()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}
