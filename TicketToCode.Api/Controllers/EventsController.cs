@@ -20,8 +20,7 @@ public class EventsController : ControllerBase
     {
         return await _context.Events.ToListAsync();
     }
-    [HttpPost]
-    [Authorize(Roles = "Admin")]  // 🛑 Endast Admin kan skapa event
+    [HttpPost] 
     public async Task<ActionResult<Event>> CreateEvent([FromBody] Event newEvent)
     {
         if (newEvent == null)
@@ -32,8 +31,7 @@ public class EventsController : ControllerBase
         return CreatedAtAction(nameof(GetEvents), new { id = newEvent.Id }, newEvent);
     }
 
-    [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]  // 🛑 Endast Admin kan uppdatera event
+    [HttpPut("{id}")] 
     public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event updatedEvent)
     {
         var existingEvent = await _context.Events.FindAsync(id);
