@@ -19,6 +19,22 @@ public class TicketToCodeDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Här kan du konfigurera entiteter, relationsregler, constraints etc.
+ 
+
+           
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+          
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasDefaultValue("User");
+
+         
+            modelBuilder.Entity<User>()
+                .Property(u => u.PasswordHash)
+                .IsRequired();
+  
     }
 }

@@ -1,5 +1,9 @@
 @page "/events"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
+@attribute [Authorize]
 
 <h1>Kommande Evenemang</h1>
 

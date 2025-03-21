@@ -8,39 +8,44 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddUserSecrets<Program>(); //user secrets
-
+builder.Configuration.AddUserSecrets<Program>(); // User secrets
 
 // PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                       ?? throw new InvalidOperationException("Database connection string not found.");
+    ?? throw new InvalidOperationException("Database connection string not found.");
 
-//DbContext Dependency Injection
+// DbContext Dependency Injection
 builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("TicketToCode.Api")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 
-builder.Services.AddControllers();
+var secretKey = builder.Configuration["JwtSettings:SecretKey"]
+    ?? throw new InvalidOperationException("JWT SecretKey is missing.");
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.Authority = "http://localhost:5001"; 
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true
-    };
-});
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = key 
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 
 builder.Services.AddCors(options =>
 {
@@ -50,7 +55,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyHeader());
 });
 
-// Add cookie authentication
+
 builder.Services.AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
@@ -61,17 +66,15 @@ builder.Services.AddAuthentication("Cookies")
 
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-
 app.UseCors("AllowBlazor");
-
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
@@ -83,8 +86,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.MapControllers(); 
-app.MapEndpoints<Program>(); 
+app.MapControllers();
+app.MapEndpoints<Program>();
 
 app.Run();
