@@ -25,7 +25,7 @@
 
     private async Task RegisterUser()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:5235/api/auth/register", new { username, password });
+        var response = await Http.PostAsJsonAsync("http://localhost:5235/auth/register", new { username, password });
 
         if (response.IsSuccessStatusCode)
         {

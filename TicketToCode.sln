@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketToCode.Api", "TicketT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketToCode.Core", "TicketToCode.Core\TicketToCode.Core.csproj", "{2972C6A3-9CC4-449E-BBB4-DE06BC8B5E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBlazorApp", "MyBlazorApp\MyBlazorApp.csproj", "{87643800-7682-4507-96B9-D10DC6BCE27B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBlazorApp", "MyBlazorApp\MyBlazorApp.csproj", "{1CACE17C-A4E9-48F1-BC2F-87AD20897369}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{2972C6A3-9CC4-449E-BBB4-DE06BC8B5E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2972C6A3-9CC4-449E-BBB4-DE06BC8B5E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2972C6A3-9CC4-449E-BBB4-DE06BC8B5E9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87643800-7682-4507-96B9-D10DC6BCE27B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87643800-7682-4507-96B9-D10DC6BCE27B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87643800-7682-4507-96B9-D10DC6BCE27B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87643800-7682-4507-96B9-D10DC6BCE27B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CACE17C-A4E9-48F1-BC2F-87AD20897369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CACE17C-A4E9-48F1-BC2F-87AD20897369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CACE17C-A4E9-48F1-BC2F-87AD20897369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CACE17C-A4E9-48F1-BC2F-87AD20897369}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

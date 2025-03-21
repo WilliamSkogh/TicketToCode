@@ -11,7 +11,7 @@ public class Register : IEndpoint
         .AllowAnonymous();
 
     // Models
-    public record Request(string Username, string Password);
+    public record Request(string Username, string Password, string Role);
     public record Response(string Username, string Role);
 
     // Logic
@@ -19,7 +19,7 @@ public class Register : IEndpoint
         Request request,
         IAuthService authService)
     {
-        var result = authService.Register(request.Username, request.Password);
+        var result = authService.Register(request.Username, request.Password, request.Role);
         if (result == null)
         {
             return TypedResults.BadRequest("Username already exists");
