@@ -4,20 +4,103 @@
 <h3>Tickets</h3>
 
 <label for="ticketType">Hur många dagar?:</label>
-<select @bind="SelectedTicketType" id="ticketType">
+<select @bind="_selectedTicketType" id="ticketType">
     <option value="1">1 dag</option>
-    <option value="2">2 dagar</option>
+    <option value="2">2 dagar</option>  
     <option value="3">3 dagar</option>
 </select>
 
-@if (SelectedTicketType == 1)
+@if (_selectedTicketType == 1 || _selectedTicketType == 2)
 {
-    <label>
-        <input type="checkbox" @bind="@SelectedDays">
-    </label>
+    @foreach (var day in _availableDays)
+    {
+        <label>
+            <input type="checkbox" @onchange="@(() => ToggleDay(day.Date))" checked="@_selectedDays.Contains(day.Date)" />
+        </label>
+    }
 }
 
 
+<button @onclick="BuyTicket">Köp biljett</button>
+
+@if (_successMessage != null)
+{
+<p style="color: green;">@_successMessage</p>
+}
+
+@if (_errorMessage != null)
+{
+<p style="color: red;">@_errorMessage</p>
+}
+
 @code {
-    private int SelectedTicketType = 1;
+    private int _selectedTicketType = 1;
+    private List<DateTime> _selectedDays = new();
+    
+    private List<DayOption> _availableDays = new()
+    {
+        new DayOption { Label = "Dag 1", Date = new DateTime(2024, 6, 10) },
+        new DayOption { Label = "Dag 2", Date = new DateTime(2024, 6, 11) },
+        new DayOption { Label = "Dag 3", Date = new DateTime(2024, 6, 12) }
+    };
+    
+    private string? _successMessage;
+    private string? _errorMessage;
+    
+    private void ToggleDay(DateTime date)
+    {
+        if (_selectedDays.Contains(date))
+        {
+            _selectedDays.Remove(date);
+        }
+        else
+        {
+            _selectedDays.Add(date);
+        }
+    }
+    
+    private async Task BuyTicket()
+    {
+        // Om 3 dagar väljs, välj alla automatiskt
+        if (_selectedTicketType == 3)
+        {
+            _selectedDays = _availableDays.Select(d => d.Date).ToList();
+        }
+
+        var newTicket = new Ticket
+        {
+            TicketType = _selectedTicketType,
+            SelectedDays = _selectedDays
+        };
+        
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/ticket", newTicket);
+            if (response.IsSuccessStatusCode)
+            {
+                _successMessage = "Biljett köpt!";
+                _errorMessage = null;
+            }
+            else
+            {
+                _errorMessage = "Kunde inte köpa biljett.";
+                _successMessage = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Fel: {ex.Message}";
+        }
+    }
+    public class Ticket
+    {
+        public int TicketType { get; set; }
+        public List<DateTime>? SelectedDays { get; set; }
+    }
+
+    public class DayOption
+    {
+        public string? Label { get; set; }
+        public DateTime Date { get; set; }
+    }
 }
