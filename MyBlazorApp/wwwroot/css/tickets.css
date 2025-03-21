@@ -1,0 +1,21 @@
+
+    body {
+        background: #111;
+        color: white;
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+    }
+
+    .ticket {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid cyan;
+        transition: 0.3s;
+    }
+
+    .ticket:hover {
+        transform: rotate(3deg) scale(1.05);
+        box-shadow: 0 0 15px cyan;
+    }
+    

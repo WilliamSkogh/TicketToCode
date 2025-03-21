@@ -1,17 +1,31 @@
-.event-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
 
-.event-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 350px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    background-color: white;
-    text-align: center;
-    margin: 10px;
-}
+    body {
+        background: linear-gradient(45deg, #ff00ff, #00ffff, #ffcc00, #ff3300);
+        background-size: 400% 400%;
+        animation: gradientBG 10s infinite alternate;
+        font-family: 'Orbitron', sans-serif;
+        color: white;
+    }
+
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+
+    .event-card {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .event-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px cyan;
+    }
+
+    h1 {
+        text-shadow: 0 0 10px white;
+    }
+    
