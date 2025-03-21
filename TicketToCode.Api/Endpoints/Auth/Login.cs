@@ -12,11 +12,10 @@ public class Login : IEndpoint
 
     // Models
     public record Request(string Username, string Password);
-    public record Response(string Username, string Role, string Token);
-
+    public record AuthResponse(string Username, string Role, string Access_Token);
 
     // Logic
-    private static Results<Ok<Response>, NotFound<string>> Handle(
+    private static Results<Ok<AuthResponse>, NotFound<string>> Handle(
         Request request,
         IAuthService authService,
         HttpContext context)
@@ -35,8 +34,9 @@ public class Login : IEndpoint
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
-        var response = new Response(result.Username, result.Role, token);
+
+        var response = new AuthResponse(result.Username, result.Role, token);
 
         return TypedResults.Ok(response);
     }
-} 
+}
