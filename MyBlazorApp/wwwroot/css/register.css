@@ -1,36 +1,41 @@
 
-    body {
-        background: linear-gradient(60deg, #ff00ff, #ff3300);
-        font-family: 'Orbitron', sans-serif;
-        color: white;
-    }
+.register-container {
+    background: rgba(20, 20, 20, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+    width: 350px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    border: 2px solid #00ffff;
+}
 
-    form {
-        max-width: 400px;
-        margin: auto;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 20px;
-        border-radius: 10px;
-    }
+input, button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+}
 
-    input {
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: 2px solid magenta;
-        padding: 10px;
-        width: 100%;
-    }
+input {
+    background-color: #222;
+    color: white;
+    text-align: center;
+}
 
-    button {
-        background: magenta;
-        padding: 12px;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
+button {
+    background: linear-gradient(to right, #00ffff, #ff00ff);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
 
-    button:hover {
-        background: cyan;
-        box-shadow: 0 0 10px cyan;
-    }
-    
+button:hover {
+    background: linear-gradient(to right, #ff00ff, #00ffff);
+    box-shadow: 0 0 10px #00ffff;
+}

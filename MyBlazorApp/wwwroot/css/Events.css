@@ -1,31 +1,24 @@
 
-    body {
-        background: linear-gradient(45deg, #ff00ff, #00ffff, #ffcc00, #ff3300);
-        background-size: 400% 400%;
-        animation: gradientBG 10s infinite alternate;
-        font-family: 'Orbitron', sans-serif;
-        color: white;
-    }
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 40px;
+    max-width: 90%;
+}
 
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
-    }
+.event-card {
+    background: linear-gradient(145deg, #ff00ff, #ff6600, #00ffff);
+    border-radius: 12px;
+    padding: 20px;
+    color: black;
+    font-weight: bold;
+    text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .event-card {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .event-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 20px cyan;
-    }
-
-    h1 {
-        text-shadow: 0 0 10px white;
-    }
-    
+.event-card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.7);
+}

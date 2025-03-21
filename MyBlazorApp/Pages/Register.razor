@@ -2,6 +2,11 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
+<head>
+    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+<div class="register-container">
 <h3>Registrera dig</h3>
 
 @if (!string.IsNullOrEmpty(successMessage))
@@ -16,6 +21,7 @@
 <input @bind="username" placeholder="Användarnamn" />
 <input @bind="password" type="password" />
 <button @onclick="RegisterUser">Registrera</button>
+</div>
 
 @code {
     private string username = "";

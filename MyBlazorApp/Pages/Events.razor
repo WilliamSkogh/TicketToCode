@@ -5,7 +5,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 @attribute [Authorize]
-
+<head>
+    <link rel="stylesheet" href="css/Events.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
 <h1>Kommande Evenemang</h1>
 
 @if (events == null)
