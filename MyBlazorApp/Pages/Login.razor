@@ -1,10 +1,8 @@
-@using Microsoft.AspNetCore.Components.Authorization
-
 @page "/login"
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject CustomAuthStateProvider AuthProvider
 @inject IJSRuntime JS
-@inject AuthenticationStateProvider AuthStateProvider
 
 <h3>Logga in</h3>
 
@@ -24,25 +22,20 @@
 
     private async Task LoginUser()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:5235/auth/login", new { username, password });
+        var response = await Http.PostAsJsonAsync("auth/login", new { username, password });
 
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
 
-            if (result?.Access_Token != null)
+            if (result is not null && !string.IsNullOrEmpty(result.Access_Token))
             {
-                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Access_Token);
-                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Access_Token);
-
-                // 🟢 Uppdatera authentication state direkt
-                await ((CustomAuthStateProvider)AuthStateProvider).AuthenticateUser();
-
-                Navigation.NavigateTo("/admin", true);
+                await AuthProvider.SetUserAsync(result.Access_Token);
+                Navigation.NavigateTo("/admin");
             }
             else
             {
-                errorMessage = "Inloggningen misslyckades.";
+                errorMessage = "Token saknas i svaret.";
             }
         }
         else
@@ -51,8 +44,10 @@
         }
     }
 
-    private class AuthResponse
-    {
-        public string? Access_Token { get; set; }
-    }
+private class AuthResponse
+{
+    public string? Username { get; set; }
+    public string? Role { get; set; }
+    public string? Access_Token { get; set; }
+}
 }
