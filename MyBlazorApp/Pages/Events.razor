@@ -1,4 +1,5 @@
 @page "/events"
+@using MyBlazorApp.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -17,19 +18,19 @@ else if (!events.Any())
 }
 else
 {
-    <div class="event-container">
-        @foreach (var evt in events)
-        {
-            <div class="event-card">
-                <h3>@evt.Name</h3>
-                <p>@evt.Description</p>
-                <p><strong>Start:</strong> @evt.Start.ToString("yyyy-MM-dd HH:mm")</p>
-                <p><strong>Slut:</strong> @evt.End.ToString("yyyy-MM-dd HH:mm")</p>
-                <p><strong>Max deltagare:</strong> @evt.MaxAttendees</p>
-            </div>
-        }
+<div class="event-container">
+    @foreach (var evt in events)
+    {
+    <EventCard
+        Title="@evt.Name"
+        Description="@evt.Description"
+        Start="@evt.Start"
+        End="@evt.End"
+        MaxAttendees="@evt.MaxAttendees"/>
+    }
     </div>
 }
+
 
 @code {
     private List<Event> events = new();

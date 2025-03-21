@@ -4,6 +4,8 @@ using TicketToCode.Core.Data;
 using TicketToCode.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 
+namespace TicketToCode.Api.Controllers;
+
 [ApiController]
 [Route("api/events")]
 public class EventsController : ControllerBase
