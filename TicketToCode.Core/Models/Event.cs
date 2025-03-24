@@ -1,4 +1,4 @@
-﻿namespace TicketToCode.Core.Models;
+﻿﻿namespace TicketToCode.Core.Models;
 public class Event
 {
     public int Id { get; set; }

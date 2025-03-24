@@ -47,6 +47,7 @@ public class AuthService : IAuthService
             return null;
         }
 
+        
         var user = new User
         {
             Username = username,
@@ -75,7 +76,9 @@ public class AuthService : IAuthService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, user.Role) 
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+
         };
 
         var token = new JwtSecurityToken(
