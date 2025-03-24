@@ -3,7 +3,16 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
+<<<<<<< HEAD
 <h1>Book your event with us</h1>
+=======
+<head>
+    <link rel="stylesheet" href="css/tickets.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+<div class="admin-container">
+<h3>Tickets</h3>
+>>>>>>> origin/main
 
 <EditForm Model="@ticket" OnValidSubmit="SubmitTicket">
     <DataAnnotationsValidator />
@@ -50,9 +59,25 @@
         </InputSelect><br /><br />
     </div>
 
+<<<<<<< HEAD
     <button type="submit">Book Ticket</button>
 </EditForm>
 
+=======
+
+<button @onclick="BuyTicket">Köp biljett</button>
+
+@if (_successMessage != null)
+{
+<p style="color: green;">@_successMessage</p>
+}
+
+@if (_errorMessage != null)
+{
+<p style="color: red;">@_errorMessage</p>
+}
+</div>
+>>>>>>> origin/main
 @code {
     private Ticket ticket = new();
     private List<EventModel> events = new();

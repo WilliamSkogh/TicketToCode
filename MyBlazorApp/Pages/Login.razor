@@ -4,6 +4,11 @@
 @inject CustomAuthStateProvider AuthProvider
 @inject IJSRuntime JS
 
+<head>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+<div class="login-container">
 <h3>Logga in</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -14,7 +19,7 @@
 <input @bind="username" placeholder="Användarnamn" />
 <input @bind="password" type="password" />
 <button @onclick="LoginUser">Logga in</button>
-
+</div>
 @code {
     private string username = "";
     private string password = "";
