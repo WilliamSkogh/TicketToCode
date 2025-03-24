@@ -1,6 +1,5 @@
 @page "/tickets"
-@using TicketToCode.Shared.Models
-@using Microsoft.AspNetCore.Components.Forms
+@using TicketToCode.Core.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
@@ -40,7 +39,7 @@
         <label>Event:</label><br />
         @if (events == null || events.Count == 0)
         {
-            <p>Loading events...</p> <!-- Visar medan events laddas -->
+            <p>Loading events...</p> 
         }
         else
         {
@@ -110,7 +109,7 @@
             {
                 _successMessage = "Ticket booked successfully!";
                 _errorMessage = null;
-                ticket = new(); // Nollställ formuläret
+                ticket = new(); 
             }
             else
             {
