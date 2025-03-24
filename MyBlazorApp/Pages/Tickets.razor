@@ -1,106 +1,95 @@
 @page "/tickets"
+@using TicketToCode.Shared.Models
 @inject HttpClient Http
+@inject NavigationManager Navigation
 
-<h3>Tickets</h3>
+<h1>Book your event with us</h1>
 
-<label for="ticketType">Hur många dagar?:</label>
-<select @bind="_selectedTicketType" id="ticketType">
-    <option value="1">1 dag</option>
-    <option value="2">2 dagar</option>  
-    <option value="3">3 dagar</option>
-</select>
+<EditForm Model="@ticket" OnValidSubmit="SubmitTicket">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-@if (_selectedTicketType == 1 || _selectedTicketType == 2)
-{
-    @foreach (var day in _availableDays)
-    {
-        <label>
-            <input type="checkbox" @onchange="@(() => ToggleDay(day.Date))" checked="@_selectedDays.Contains(day.Date)" />
-        </label>
-    }
-}
+    <div>
+        <label>First name:</label><br />
+        <InputText @bind-Value="@ticket.FirstName" /><br /><br />
+    </div>
+    <div>
+        <label>Last name:</label><br />
+        <InputText @bind-Value="@ticket.LastName" /><br /><br />
+    </div>
+    <div>
+        <label>Phone:</label><br />
+        <InputText @bind-Value="@ticket.Phone" /><br /><br />
+    </div>
+    <div>
+        <label>Email:</label><br />
+        <InputText @bind-Value="@ticket.Email" /><br /><br />
+    </div>
+    <div>
+        <label>Event:</label><br />
+        <InputSelect @bind-Value="@ticket.EventId">
+            <option value="">Select an event</option>
+            @foreach (var ev in events)
+            {
+                <option value="@ev.Id">@ev.Name</option>
+            }
+        </InputSelect><br /><br />
+    </div>
+    <div>
+        <label>Number of tickets:</label><br />
+        <InputNumber @bind-Value="@ticket.Quantity" /><br /><br />
+    </div>
+    <div>
+        <label>Payment method:</label><br />
+        <InputSelect @bind-Value="@ticket.PaymentMethod">
+            <option value="">Select payment method</option>
+            @foreach (var method in Enum.GetValues<PaymentMethod>())
+            {
+                <option value="@method">@method</option>
+            }
+        </InputSelect><br /><br />
+    </div>
 
-
-<button @onclick="BuyTicket">Köp biljett</button>
-
-@if (_successMessage != null)
-{
-<p style="color: green;">@_successMessage</p>
-}
-
-@if (_errorMessage != null)
-{
-<p style="color: red;">@_errorMessage</p>
-}
+    <button type="submit">Book Ticket</button>
+</EditForm>
 
 @code {
-    private int _selectedTicketType = 1;
-    private List<DateTime> _selectedDays = new();
-    
-    private List<DayOption> _availableDays = new()
-    {
-        new DayOption { Label = "Dag 1", Date = new DateTime(2024, 6, 10) },
-        new DayOption { Label = "Dag 2", Date = new DateTime(2024, 6, 11) },
-        new DayOption { Label = "Dag 3", Date = new DateTime(2024, 6, 12) }
-    };
-    
-    private string? _successMessage;
-    private string? _errorMessage;
-    
-    private void ToggleDay(DateTime date)
-    {
-        if (_selectedDays.Contains(date))
-        {
-            _selectedDays.Remove(date);
-        }
-        else
-        {
-            _selectedDays.Add(date);
-        }
-    }
-    
-    private async Task BuyTicket()
-    {
-        // Om 3 dagar väljs, välj alla automatiskt
-        if (_selectedTicketType == 3)
-        {
-            _selectedDays = _availableDays.Select(d => d.Date).ToList();
-        }
+    private Ticket ticket = new();
+    private List<EventModel> events = new();
 
-        var newTicket = new Ticket
-        {
-            TicketType = _selectedTicketType,
-            SelectedDays = _selectedDays
-        };
-        
+    private class EventModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/ticket", newTicket);
+            var response = await Http.GetAsync("https://localhost:5235/events");
             if (response.IsSuccessStatusCode)
             {
-                _successMessage = "Biljett köpt!";
-                _errorMessage = null;
-            }
-            else
-            {
-                _errorMessage = "Kunde inte köpa biljett.";
-                _successMessage = null;
+                events = await response.Content.ReadFromJsonAsync<List<EventModel>>() ?? new();
             }
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Fel: {ex.Message}";
+            Console.WriteLine($"Error fetching events: {ex.Message}");
         }
     }
-    public class Ticket
-    {
-        public int TicketType { get; set; }
-        public List<DateTime>? SelectedDays { get; set; }
-    }
 
-    public class DayOption
+    private async Task SubmitTicket()
     {
-        public string? Label { get; set; }
-        public DateTime Date { get; set; }
+        var response = await Http.PostAsJsonAsync("https://localhost:5235/tickets", ticket);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/booking/confirmation");
+        }
+        else
+        {
+            Console.WriteLine("Ticket booking failed");
+        }
     }
 }

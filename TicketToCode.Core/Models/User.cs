@@ -1,5 +1,6 @@
 namespace TicketToCode.Core.Models;
 
+
 public class User
 {
     public int Id { get; set; }
@@ -9,6 +10,11 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public User() { }
+    public Ticket? FridayTicket { get; set; }
+    public Ticket? SaturdayTicket { get; set; }
+    public Ticket? SundayTicket { get; set; }
+
+
     public User(string name, string pwd)
     {
         Username = name;

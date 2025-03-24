@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TicketToCode.Core.Models;
+namespace TicketToCode.Shared.Models;
 
 public class Ticket
 {
