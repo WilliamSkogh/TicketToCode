@@ -55,10 +55,13 @@
             <button type="submit">Skapa event</button>
         </EditForm>
 
-        @if (!string.IsNullOrEmpty(successMessage))
+        @if (!string.IsNullOrWhiteSpace(successMessage))
         {
-        <p style="color:green">@successMessage</p>
+            <p style="color:@(successMessage.StartsWith("✅") ? "green" : "red")">
+                @successMessage
+            </p>
         }
+
         }
         else
         {
@@ -72,50 +75,52 @@
 </AuthorizeView>
 
 @code {
-private bool isAdmin = false;
+    private bool isAdmin = false;
 
-private Event newEvent = new Event
-{
-Name = "",
-Description = "",
-Type = EventType.Other,
-StartTime = DateTime.Now,
-EndTime = DateTime.Now.AddHours(1),
-MaxAttendees = 100
-};
+    private Event newEvent = new Event
+    {
+        Name = "",
+        Description = "",
+        Type = EventType.Other,
+        StartTime = DateTime.Now,
+        EndTime = DateTime.Now.AddHours(1),
+        MaxAttendees = 100
+    };
 
-private string? successMessage;
+    private string? successMessage;
 
-protected override async Task OnInitializedAsync()
-{
-var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-isAdmin = authState.User.IsInRole("Admin");
-}
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("Admin");
+    }
 
-private async Task HandleValidSubmit()
-{
-var success = await EventService.CreateEventAsync(newEvent);
-if (success)
-{
-successMessage = "Eventet har skapats!";
-newEvent = new Event
-{
-Name = "",
-Description = "",
-Type = EventType.Other,
-StartTime = DateTime.Now,
-EndTime = DateTime.Now.AddHours(1),
-MaxAttendees = 100
-};
-}
-else
-{
-successMessage = "Något gick fel vid skapandet av event.";
-}
-}
+    private async Task HandleValidSubmit()
+    {
+        var response = await EventService.CreateEventRawAsync(newEvent);
 
-private void Login()
-{
-Navigation.NavigateTo("/login");
-}
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "✅ Eventet har skapats!";
+            newEvent = new Event
+            {
+                Name = "",
+                Description = "",
+                Type = EventType.Other,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                MaxAttendees = 100
+            };
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            successMessage = $"❌ Fel: {response.StatusCode} – {error}";
+        }
+    }
+
+    private void Login()
+    {
+        Navigation.NavigateTo("/login");
+    }
 }
