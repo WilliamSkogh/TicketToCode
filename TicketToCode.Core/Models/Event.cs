@@ -1,12 +1,12 @@
-﻿namespace TicketToCode.Core.Models;
+﻿﻿namespace TicketToCode.Core.Models;
 public class Event
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = "New event";
     public string Description { get; set; } = string.Empty;
-    public int Type { get; set; }
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
+    public EventType Type { get; set; }
+    public DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
     public int MaxAttendees { get; set; }
 }
 
