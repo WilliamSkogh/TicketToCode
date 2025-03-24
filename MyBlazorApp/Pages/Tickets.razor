@@ -1,20 +1,21 @@
 @page "/tickets"
 @using TicketToCode.Shared.Models
+@using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
-<<<<<<< HEAD
 <h1>Book your event with us</h1>
-=======
-<head>
-    <link rel="stylesheet" href="css/tickets.css">
-    <link rel="stylesheet" href="css/Background.css">
-</head>
-<div class="admin-container">
-<h3>Tickets</h3>
->>>>>>> origin/main
 
-<EditForm Model="@ticket" OnValidSubmit="SubmitTicket">
+@if (_successMessage != null)
+{
+    <p style="color: green;">@_successMessage</p>
+}
+@if (_errorMessage != null)
+{
+    <p style="color: red;">@_errorMessage</p>
+}
+
+<EditForm Model="@ticket" OnValidSubmit="BuyTicket">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -59,28 +60,15 @@
         </InputSelect><br /><br />
     </div>
 
-<<<<<<< HEAD
     <button type="submit">Book Ticket</button>
 </EditForm>
 
-=======
-
-<button @onclick="BuyTicket">Köp biljett</button>
-
-@if (_successMessage != null)
-{
-<p style="color: green;">@_successMessage</p>
-}
-
-@if (_errorMessage != null)
-{
-<p style="color: red;">@_errorMessage</p>
-}
-</div>
->>>>>>> origin/main
 @code {
     private Ticket ticket = new();
     private List<EventModel> events = new();
+
+    private string? _successMessage;
+    private string? _errorMessage;
 
     private class EventModel
     {
@@ -104,17 +92,27 @@
         }
     }
 
-    private async Task SubmitTicket()
+    private async Task BuyTicket()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:5235/tickets", ticket);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            Navigation.NavigateTo("/booking/confirmation");
+            var response = await Http.PostAsJsonAsync("https://localhost:5235/tickets", ticket);
+            if (response.IsSuccessStatusCode)
+            {
+                _successMessage = "Ticket booked successfully!";
+                _errorMessage = null;
+                ticket = new(); // Nollställ formuläret
+            }
+            else
+            {
+                _errorMessage = "Booking failed.";
+                _successMessage = null;
+            }
         }
-        else
+        catch
         {
-            Console.WriteLine("Ticket booking failed");
+            _errorMessage = "Something went wrong.";
+            _successMessage = null;
         }
     }
 }
