@@ -1,9 +1,10 @@
 @page "/admin"
-@inject NavigationManager Navigation
-@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject EventService EventService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@attribute [Authorize]
+@using MyBlazorApp.Services
+@using TicketToCode.Core.Models
 
 <head>
     <link rel="stylesheet" href="css/Admin.css">
@@ -11,19 +12,69 @@
 </head>
 <div class="admin-container">
 <AuthorizeView>
-    <Authorized>
+    <Authorized Context="auth">
         @if (isAdmin)
         {
-            <h3>Admin Panel</h3>
-            <p>Här kan du hantera event!</p>
+        <h3>Admin Panel</h3>
+        <p>Här kan du hantera event!</p>
+
+        <EditForm Model="newEvent" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label for="name">Namn:</label>
+                <InputText id="name" @bind-Value="newEvent.Name" />
+            </div>
+
+            <div>
+                <label for="description">Beskrivning:</label>
+                <InputText id="description" @bind-Value="newEvent.Description" />
+            </div>
+
+            <div>
+                <label for="type">Typ:</label>
+                <InputSelect id="type" @bind-Value="newEvent.Type">
+                    <option value="@EventType.Concert">Konsert</option>
+                    <option value="@EventType.Festival">Festival</option>
+                    <option value="@EventType.Theatre">Teater</option>
+                    <option value="@EventType.Other">Annat</option>
+                </InputSelect>
+            </div>
+
+            <div>
+                <label for="start">Start:</label>
+                <InputDate id="start" @bind-Value="newEvent.StartTime" />
+            </div>
+
+            <div>
+                <label for="end">Slut:</label>
+                <InputDate id="end" @bind-Value="newEvent.EndTime" />
+            </div>
+
+            <div>
+                <label for="max">Max deltagare:</label>
+                <InputNumber id="max" @bind-Value="newEvent.MaxAttendees" />
+            </div>
+
+            <button type="submit">Skapa event</button>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(successMessage))
+        {
+            <p style="color:@(successMessage.StartsWith("✅") ? "green" : "red")">
+                @successMessage
+            </p>
+        }
+
         }
         else
         {
-            <p> Du har inte behörighet att se denna sida.</p>
+        <p>Du har inte behörighet att se denna sida.</p>
         }
     </Authorized>
     <NotAuthorized>
-        <p> Du måste vara inloggad för att hantera event.</p>
+        <p>Du måste vara inloggad för att hantera event.</p>
         <button @onclick="Login">Logga in</button>
     </NotAuthorized>
 </AuthorizeView>
@@ -31,10 +82,46 @@
 @code {
     private bool isAdmin = false;
 
+    private Event newEvent = new Event
+    {
+        Name = "",
+        Description = "",
+        Type = EventType.Other,
+        StartTime = DateTime.Now,
+        EndTime = DateTime.Now.AddHours(1),
+        MaxAttendees = 100
+    };
+
+    private string? successMessage;
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAdmin = authState.User.IsInRole("Admin");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await EventService.CreateEventRawAsync(newEvent);
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "✅ Eventet har skapats!";
+            newEvent = new Event
+            {
+                Name = "",
+                Description = "",
+                Type = EventType.Other,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(1),
+                MaxAttendees = 100
+            };
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            successMessage = $"❌ Fel: {response.StatusCode} – {error}";
+        }
     }
 
     private void Login()

@@ -36,7 +36,7 @@ else
 
 
 @code {
-    private List<Event> events = new();
+    private List<EventDto> events = new();
 
    protected override async Task OnInitializedAsync()
 {
@@ -47,7 +47,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            events = await response.Content.ReadFromJsonAsync<List<Event>>();
+            events = await response.Content.ReadFromJsonAsync<List<EventDto>>();
             Console.WriteLine($"✅ {events.Count} evenemang hämtade!");
         }
         else
@@ -62,7 +62,7 @@ else
 }
 
 
-    public class Event
+    public class EventDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
