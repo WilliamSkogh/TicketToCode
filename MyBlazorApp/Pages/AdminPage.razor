@@ -5,6 +5,11 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
+<head>
+    <link rel="stylesheet" href="css/Admin.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+<div class="admin-container">
 <AuthorizeView>
     <Authorized>
         @if (isAdmin)
@@ -22,7 +27,7 @@
         <button @onclick="Login">Logga in</button>
     </NotAuthorized>
 </AuthorizeView>
-
+</div>
 @code {
     private bool isAdmin = false;
 

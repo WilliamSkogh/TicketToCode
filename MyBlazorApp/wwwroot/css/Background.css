@@ -1,0 +1,44 @@
+
+/* Fixar vit bakgrund genom att sätta en neon gradient */
+body {
+    background: linear-gradient(to right, #ff00ff, #ff6600, #00ffff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Se till att navbaren har en genomskinlig bakgrund */
+.navbar {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 20px;
+}
+
+/* Se till att bakgrunden för alla sidor inte blir vit */
+.background-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Om bild används som bakgrund */
+.fullscreen-bg {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Fix för att alla containers ska ha rätt transparens */
+.event-grid, .login-container, .register-container, .admin-container {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+}

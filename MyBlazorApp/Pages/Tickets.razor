@@ -1,6 +1,11 @@
 @page "/tickets"
 @inject HttpClient Http
 
+<head>
+    <link rel="stylesheet" href="css/tickets.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+<div class="admin-container">
 <h3>Tickets</h3>
 
 <label for="ticketType">Hur många dagar?:</label>
@@ -32,7 +37,7 @@
 {
 <p style="color: red;">@_errorMessage</p>
 }
-
+</div>
 @code {
     private int _selectedTicketType = 1;
     private List<DateTime> _selectedDays = new();
