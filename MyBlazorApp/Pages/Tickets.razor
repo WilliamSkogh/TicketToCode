@@ -35,16 +35,25 @@
         <label>Email:</label><br />
         <InputText @bind-Value="@ticket.Email" /><br /><br />
     </div>
+
     <div>
         <label>Event:</label><br />
-        <InputSelect @bind-Value="@ticket.EventId">
-            <option value="">Select an event</option>
-            @foreach (var ev in events)
-            {
-                <option value="@ev.Id">@ev.Name</option>
-            }
-        </InputSelect><br /><br />
+        @if (events == null || events.Count == 0)
+        {
+            <p>Loading events...</p> <!-- Visar medan events laddas -->
+        }
+        else
+        {
+            <InputSelect @bind-Value="@ticket.EventId" required>
+                <option value="">Select an event</option>
+                @foreach (var evt in events)
+                {
+                    <option value="@evt.Id">@evt.Name</option>
+                }
+            </InputSelect><br /><br />
+        }
     </div>
+
     <div>
         <label>Number of tickets:</label><br />
         <InputNumber @bind-Value="@ticket.Quantity" /><br /><br />
