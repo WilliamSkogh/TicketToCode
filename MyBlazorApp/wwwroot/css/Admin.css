@@ -1,6 +1,13 @@
+/* Applied red & black theme automatically */
+body {
+  background: linear-gradient(to bottom, #000000, #1a0000);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 
 .admin-container {
-    background: rgba(50, 50, 50, 0.9);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(50, 50, 50, 0.9);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
