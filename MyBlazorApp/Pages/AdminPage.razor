@@ -60,6 +60,20 @@
             <button type="submit">Skapa event</button>
         </EditForm>
 
+        @if (events != null && events.Any())
+        {
+            <h4>Befintliga event</h4>
+            <ul>
+                @foreach (var ev in events)
+                {
+                    <li>
+                        <strong>@ev.Name</strong> – @ev.Type – @ev.StartTime.ToShortDateString()
+                        <button @onclick="() => DeleteEvent(ev.Id)">Ta bort</button>
+                    </li>
+                }
+            </ul>
+        }
+
         @if (!string.IsNullOrWhiteSpace(successMessage))
         {
             <p style="color:@(successMessage.StartsWith("✅") ? "green" : "red")">
@@ -79,8 +93,10 @@
     </NotAuthorized>
 </AuthorizeView>
 </div>
+
 @code {
     private bool isAdmin = false;
+    private List<Event> events = new();
 
     private Event newEvent = new Event
     {
@@ -98,6 +114,11 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAdmin = authState.User.IsInRole("Admin");
+
+        if (isAdmin)
+        {
+            events = await EventService.GetEventsAsync();
+        }
     }
 
     private async Task HandleValidSubmit()
@@ -116,11 +137,26 @@
                 EndTime = DateTime.Now.AddHours(1),
                 MaxAttendees = 100
             };
+            events = await EventService.GetEventsAsync(); 
         }
         else
         {
             var error = await response.Content.ReadAsStringAsync();
             successMessage = $"❌ Fel: {response.StatusCode} – {error}";
+        }
+    }
+
+    private async Task DeleteEvent(int id)
+    {
+        var response = await EventService.DeleteEventAsync(id);
+        if (response.IsSuccessStatusCode)
+        {
+            events = events.Where(e => e.Id != id).ToList();
+            StateHasChanged();
+        }
+        else
+        {
+            successMessage = $"❌ Misslyckades att ta bort event med id {id}";
         }
     }
 
