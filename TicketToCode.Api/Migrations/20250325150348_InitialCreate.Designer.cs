@@ -13,8 +13,8 @@ using TicketToCode.Core.Data;
 namespace TicketToCode.Core.Migrations
 {
     [DbContext(typeof(TicketToCodeDbContext))]
-    [Migration("20250325122921_RebuildMigrations")]
-    partial class RebuildMigrations
+    [Migration("20250325150348_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

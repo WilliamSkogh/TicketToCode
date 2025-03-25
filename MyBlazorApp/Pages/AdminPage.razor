@@ -44,12 +44,12 @@
 
             <div>
                 <label for="start">Start:</label>
-                <InputDate id="start" @bind-Value="newEvent.StartTime" />
+                <input type="datetime-local" @bind="newEvent.StartTime" />
             </div>
 
             <div>
                 <label for="end">Slut:</label>
-                <InputDate id="end" @bind-Value="newEvent.EndTime" />
+                <input type="datetime-local" @bind="newEvent.EndTime" />
             </div>
 
             <div>
@@ -59,6 +59,20 @@
 
             <button type="submit">Skapa event</button>
         </EditForm>
+
+        @if (events != null && events.Any())
+        {
+            <h4>Befintliga event</h4>
+            <ul>
+                @foreach (var ev in events)
+                {
+                    <li>
+                        <strong>@ev.Name</strong> – @ev.Type – @ev.StartTime.ToShortDateString()
+                        <button @onclick="() => DeleteEvent(ev.Id)">Ta bort</button>
+                    </li>
+                }
+            </ul>
+        }
 
         @if (!string.IsNullOrWhiteSpace(successMessage))
         {
@@ -79,18 +93,25 @@
     </NotAuthorized>
 </AuthorizeView>
 </div>
+
 @code {
     private bool isAdmin = false;
+    private List<Event> events = new();
 
     private Event newEvent = new Event
-    {
-        Name = "",
-        Description = "",
-        Type = EventType.Other,
-        StartTime = DateTime.Now,
-        EndTime = DateTime.Now.AddHours(1),
-        MaxAttendees = 100
-    };
+{
+    Name = "",
+    Description = "",
+    Type = EventType.Other,
+    StartTime = DateTime.Now.AddMinutes(1)
+                         .AddSeconds(-DateTime.Now.Second)
+                         .AddMilliseconds(-DateTime.Now.Millisecond),
+    EndTime = DateTime.Now.AddHours(1)
+                          .AddSeconds(-DateTime.Now.Second)
+                          .AddMilliseconds(-DateTime.Now.Millisecond),
+    MaxAttendees = 100
+};
+
 
     private string? successMessage;
 
@@ -98,10 +119,17 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAdmin = authState.User.IsInRole("Admin");
+
+        if (isAdmin)
+        {
+            events = await EventService.GetEventsAsync();
+        }
     }
 
     private async Task HandleValidSubmit()
     {
+        Console.WriteLine($"Skickar: {newEvent.StartTime} till {newEvent.EndTime}");
+
         var response = await EventService.CreateEventRawAsync(newEvent);
 
         if (response.IsSuccessStatusCode)
@@ -116,11 +144,26 @@
                 EndTime = DateTime.Now.AddHours(1),
                 MaxAttendees = 100
             };
+            events = await EventService.GetEventsAsync(); 
         }
         else
         {
             var error = await response.Content.ReadAsStringAsync();
             successMessage = $"❌ Fel: {response.StatusCode} – {error}";
+        }
+    }
+
+    private async Task DeleteEvent(int id)
+    {
+        var response = await EventService.DeleteEventAsync(id);
+        if (response.IsSuccessStatusCode)
+        {
+            events = events.Where(e => e.Id != id).ToList();
+            StateHasChanged();
+        }
+        else
+        {
+            successMessage = $"❌ Misslyckades att ta bort event med id {id}";
         }
     }
 

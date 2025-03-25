@@ -26,4 +26,8 @@ public class EventService
     {
         return await _httpClient.PostAsJsonAsync("/events", newEvent);
     }
+    public async Task<HttpResponseMessage> DeleteEventAsync(int id)
+{
+    return await _httpClient.DeleteAsync($"api/events/{id}");
+}
 }

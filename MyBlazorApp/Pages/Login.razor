@@ -36,7 +36,7 @@
             if (result is not null && !string.IsNullOrEmpty(result.Access_Token))
             {
                 await AuthProvider.SetUserAsync(result.Access_Token);
-                Navigation.NavigateTo("/admin");
+                Navigation.NavigateTo("/");
             }
             else
             {
