@@ -1,45 +1,4 @@
 @page "/mytickets"
 @inject HttpClient Http
-@using TicketToCode.Core.Models
 
 <h2>Your Tickets</h2>
-
-@if (tickets == null)
-{
-    <p>Loading...</p>
-}
-else if (tickets.Count == 0)
-{
-    <p>You have no tickets yet.</p>
-}
-else
-{
-    <ul>
-        @foreach (var ticket in tickets)
-        {
-            <li>
-                <strong>@ticket.FirstName @ticket.LastName</strong><br />
-                Event ID: @ticket.EventId<br />
-                Quantity: @ticket.Quantity<br />
-                Payment: @ticket.PaymentMethod<br />
-                Date: @ticket.BookingDate.ToString("yyyy-MM-dd HH:mm")<br /><br />
-            </li>
-        }
-    </ul>
-}
-
-@code {
-    private List<Ticket>? tickets;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            tickets = await Http.GetFromJsonAsync<List<Ticket>>("https://localhost:5235/tickets");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error loading tickets: " + ex.Message);
-        }
-    }
-}
