@@ -28,7 +28,7 @@ public class AuthService : IAuthService
 
     public User? Login(string username, string password, out string token)
     {
-        token = string.Empty; 
+        token = string.Empty;
 
         var user = _dbContext.Users.FirstOrDefault(u => u.Username == username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
@@ -47,10 +47,12 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var user = new User(username, BCrypt.Net.BCrypt.HashPassword(password))
-{
-    Role = role
-};
+        var user = new User
+        {
+            Username = username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+            Role = role
+        };
 
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
@@ -73,14 +75,15 @@ public class AuthService : IAuthService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, user.Role) 
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 
         var token = new JwtSecurityToken(
             _configuration["JwtSettings:Issuer"],
             _configuration["JwtSettings:Audience"],
             claims,
-            expires: DateTime.UtcNow.AddHours(24), 
+            expires: DateTime.UtcNow.AddHours(24),
             signingCredentials: credentials
         );
 

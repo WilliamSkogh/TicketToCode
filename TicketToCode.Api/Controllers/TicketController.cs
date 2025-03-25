@@ -4,7 +4,7 @@ using System.Security.Claims;
 using TicketToCode.Core.Data;
 using TicketToCode.Core.Models;
 
-namespace TicketToCode.Api.Endpoints;
+namespace TicketToCode.Api.Controllers;
 
 [ApiController]
 [Route("tickets")]
@@ -18,19 +18,13 @@ public class TicketsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize] 
+    [Authorize]
     public async Task<IActionResult> PostTicket([FromBody] Ticket ticket)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+        if (userId == null) return Unauthorized();
 
-
-        if (userId != null)
-        {
-            ticket.UserId = userId;
-            ticket.UserEmail = userEmail;
-        }
-
+        ticket.UserId = userId;
         ticket.BookingDate = DateTime.UtcNow;
 
         _context.Tickets.Add(ticket);
@@ -39,10 +33,20 @@ public class TicketsController : ControllerBase
         return Ok(ticket);
     }
 
+    [HttpGet("my")]
+    [Authorize]
+    public IActionResult GetMyTickets()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Unauthorized();
+
+        var myTickets = _context.Tickets
+            .Where(t => t.UserId == userId)
+            .ToList();
+
+        return Ok(myTickets);
+    }
 
     [HttpGet]
-    public IActionResult GetAllTickets()
-    {
-        return Ok(_context.Tickets.ToList());
-    }
+    public IActionResult GetAllTickets() => Ok(_context.Tickets.ToList());
 }

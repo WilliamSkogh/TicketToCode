@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
-<h1>Boka biljett till ett event</h1>
+<h1>Book your event with us</h1>
 
 @if (_successMessage != null)
 {
@@ -20,32 +20,30 @@
     <ValidationSummary />
 
     <div>
-        <label>Förnamn:</label><br />
+        <label>First name:</label><br />
         <InputText @bind-Value="@ticket.FirstName" /><br /><br />
     </div>
+
     <div>
-        <label>Efternamn:</label><br />
+        <label>Last name:</label><br />
         <InputText @bind-Value="@ticket.LastName" /><br /><br />
     </div>
+
     <div>
-        <label>Telefon:</label><br />
+        <label>Phone:</label><br />
         <InputText @bind-Value="@ticket.Phone" /><br /><br />
-    </div>
-    <div>
-        <label>Email:</label><br />
-        <InputText @bind-Value="@ticket.Email" /><br /><br />
     </div>
 
     <div>
         <label>Event:</label><br />
         @if (events == null || events.Count == 0)
         {
-            <p>Laddar events...</p> 
+            <p>Loading events...</p>
         }
         else
         {
-            <InputSelect @bind-Value="@ticket.EventId" required>
-                <option value="">Välj ett event</option>
+            <InputSelect @bind-Value="@ticket.EventId">
+                <option value="">Select an event</option>
                 @foreach (var evt in events)
                 {
                     <option value="@evt.Id">@evt.Name</option>
@@ -55,13 +53,14 @@
     </div>
 
     <div>
-        <label>Antal biljetter:</label><br />
+        <label>Number of tickets:</label><br />
         <InputNumber @bind-Value="@ticket.Quantity" /><br /><br />
     </div>
+
     <div>
-        <label>Betalmetod:</label><br />
+        <label>Payment method:</label><br />
         <InputSelect @bind-Value="@ticket.PaymentMethod">
-            <option value="">Välj betalmetod</option>
+            <option value="">Select payment method</option>
             @foreach (var method in Enum.GetValues<PaymentMethod>())
             {
                 <option value="@method">@method</option>
@@ -69,39 +68,34 @@
         </InputSelect><br /><br />
     </div>
 
-    <button type="submit">Boka</button>
+    <button type="submit">Book Ticket</button>
 </EditForm>
 
 @code {
     private Ticket ticket = new();
-    private List<EventModel> events = new();
+    private List<Event> events = new();
 
     private string? _successMessage;
     private string? _errorMessage;
-
-    private class EventModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var response = await Http.GetAsync("https://localhost:5235/events");
+            var response = await Http.GetAsync("http://localhost:5235/events");
             if (response.IsSuccessStatusCode)
             {
-                events = await response.Content.ReadFromJsonAsync<List<EventModel>>() ?? new();
+                events = await response.Content.ReadFromJsonAsync<List<Event>>() ?? new();
+                Console.WriteLine($"✅ Loaded {events.Count} events");
             }
             else
             {
-                _errorMessage = "Kunde inte hämta event.";
+                Console.WriteLine($"❌ Failed to load events: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            _errorMessage = $"Fel vid hämtning av event: {ex.Message}";
+            Console.WriteLine($"❌ Error fetching events: {ex.Message}");
         }
     }
 
@@ -112,19 +106,19 @@
             var response = await Http.PostAsJsonAsync("https://localhost:5235/tickets", ticket);
             if (response.IsSuccessStatusCode)
             {
-                _successMessage = "Bokningen lyckades!";
+                _successMessage = "Ticket booked successfully!";
                 _errorMessage = null;
                 ticket = new(); 
             }
             else
             {
-                _errorMessage = "Kunde inte boka biljett.";
+                _errorMessage = "Booking failed.";
                 _successMessage = null;
             }
         }
         catch
         {
-            _errorMessage = "Något gick fel vid bokningen.";
+            _errorMessage = "Something went wrong while booking.";
             _successMessage = null;
         }
     }
