@@ -22,21 +22,21 @@ public class CreateEvent : IEndpoint
 
     //Logic
     private static async Task<Ok<Response>> Handle(Request request, TicketToCodeDbContext db)
+{
+    var ev = new Event
     {
-        var ev = new Event
-        {
-            Name = request.Name,
-            Description = request.Description,
-            Type = request.Type,
-            StartTime = request.Start,
-            EndTime = request.End,
-            MaxAttendees = request.MaxAttendees
-        };
+        Name = request.Name,
+        Description = request.Description,
+        Type = request.Type,
+        StartTime = request.Start.ToUniversalTime(),
+        EndTime = request.End.ToUniversalTime(),
+        MaxAttendees = request.MaxAttendees
+    };
 
-        db.Events.Add(ev);
-        await db.SaveChangesAsync(); // ✅ Använd asynkron SaveChangesAsync()
+    db.Events.Add(ev);
+    await db.SaveChangesAsync();
 
-        return TypedResults.Ok(new Response(ev.Id));
-    }
+    return TypedResults.Ok(new Response(ev.Id));
+}
 }
 
