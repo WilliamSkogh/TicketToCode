@@ -47,12 +47,10 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var user = new User
-        {
-            Username = username,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-            Role = role
-        };
+        var user = new User(username, BCrypt.Net.BCrypt.HashPassword(password))
+{
+    Role = role
+};
 
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
