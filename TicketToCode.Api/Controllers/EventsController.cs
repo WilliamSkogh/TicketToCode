@@ -26,6 +26,12 @@ public class EventsController : ControllerBase
     [Authorize(Roles = "Admin")]  // 🛑 Endast Admin kan skapa event
     public async Task<ActionResult<Event>> CreateEvent([FromBody] Event newEvent)
     {
+        Console.WriteLine("📥 [API] Mottaget nytt event:");
+
+        newEvent.StartTime = newEvent.StartTime.ToUniversalTime();
+        newEvent.EndTime = newEvent.EndTime.ToUniversalTime();
+
+        
         if (newEvent == null)
             return BadRequest("Invalid event data");
 

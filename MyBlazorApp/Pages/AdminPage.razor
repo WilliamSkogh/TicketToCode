@@ -44,12 +44,12 @@
 
             <div>
                 <label for="start">Start:</label>
-                <InputDate id="start" @bind-Value="newEvent.StartTime" />
+                <input type="datetime-local" @bind="newEvent.StartTime" />
             </div>
 
             <div>
                 <label for="end">Slut:</label>
-                <InputDate id="end" @bind-Value="newEvent.EndTime" />
+                <input type="datetime-local" @bind="newEvent.EndTime" />
             </div>
 
             <div>
@@ -99,14 +99,19 @@
     private List<Event> events = new();
 
     private Event newEvent = new Event
-    {
-        Name = "",
-        Description = "",
-        Type = EventType.Other,
-        StartTime = DateTime.Now,
-        EndTime = DateTime.Now.AddHours(1),
-        MaxAttendees = 100
-    };
+{
+    Name = "",
+    Description = "",
+    Type = EventType.Other,
+    StartTime = DateTime.Now.AddMinutes(1)
+                         .AddSeconds(-DateTime.Now.Second)
+                         .AddMilliseconds(-DateTime.Now.Millisecond),
+    EndTime = DateTime.Now.AddHours(1)
+                          .AddSeconds(-DateTime.Now.Second)
+                          .AddMilliseconds(-DateTime.Now.Millisecond),
+    MaxAttendees = 100
+};
+
 
     private string? successMessage;
 
@@ -123,6 +128,8 @@
 
     private async Task HandleValidSubmit()
     {
+        Console.WriteLine($"Skickar: {newEvent.StartTime} till {newEvent.EndTime}");
+
         var response = await EventService.CreateEventRawAsync(newEvent);
 
         if (response.IsSuccessStatusCode)
