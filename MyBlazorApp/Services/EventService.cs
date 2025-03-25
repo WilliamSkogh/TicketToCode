@@ -28,6 +28,6 @@ public class EventService
     }
     public async Task<HttpResponseMessage> DeleteEventAsync(int id)
 {
-    return await _httpClient.DeleteAsync($"events/{id}");
+    return await _httpClient.DeleteAsync($"api/events/{id}");
 }
 }
