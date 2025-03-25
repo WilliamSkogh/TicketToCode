@@ -5,7 +5,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 @attribute [Authorize]
-
+<head>
+    <link rel="stylesheet" href="css/Events.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
 <h1>Kommande Evenemang</h1>
 
 @if (events == null)
@@ -33,7 +36,7 @@ else
 
 
 @code {
-    private List<Event> events = new();
+    private List<EventDto> events = new();
 
    protected override async Task OnInitializedAsync()
 {
@@ -44,7 +47,7 @@ else
 
         if (response.IsSuccessStatusCode)
         {
-            events = await response.Content.ReadFromJsonAsync<List<Event>>();
+            events = await response.Content.ReadFromJsonAsync<List<EventDto>>();
             Console.WriteLine($"✅ {events.Count} evenemang hämtade!");
         }
         else
@@ -59,11 +62,11 @@ else
 }
 
 
-    public class Event
+    public class EventDto
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int Type { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }

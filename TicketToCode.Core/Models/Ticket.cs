@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TicketToCode.Core.Models;
 
 public class Ticket
@@ -9,8 +11,6 @@ public class Ticket
     public int EventId { get; set; } 
     public Event? Event { get; set; } 
 
-    public TicketType TicketType { get; set; }
-
     public List<DateTime> SelectedDays { get; set; } = new(); 
 
     public string FirstName { get; set; } = string.Empty;
@@ -21,12 +21,6 @@ public class Ticket
     public PaymentMethod PaymentMethod { get; set; }
 }
 
-public enum TicketType
-{
-    OneDay = 1,
-    TwoDays = 2,
-    ThreeDays = 3,
-}
 
 public enum PaymentMethod
 {

@@ -47,6 +47,7 @@ public class AuthService : IAuthService
             return null;
         }
 
+        
         var user = new User
         {
             Username = username,
