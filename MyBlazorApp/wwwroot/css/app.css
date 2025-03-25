@@ -1,3 +1,10 @@
+/* Applied red & black theme automatically */
+body {
+  background: linear-gradient(to bottom, #000000, #1a0000);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 
 
     .background-container {

@@ -1,6 +1,13 @@
+/* Applied red & black theme automatically */
+body {
+  background: linear-gradient(to bottom, #000000, #1a0000);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 
 .register-container {
-    background: rgba(20, 20, 20, 0.9);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(20, 20, 20, 0.9);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
@@ -21,14 +28,14 @@ input, button {
 }
 
 input {
-    background-color: #222;
-    color: white;
+    background-color: #1a0000000; #222;
+    color: #ff0000fff;
     text-align: center;
 }
 
 button {
-    background: linear-gradient(to right, #00ffff, #ff00ff);
-    color: white;
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #00ffff, #ff00ff);
+    color: #ff0000fff;
     cursor: pointer;
     font-weight: bold;
     text-transform: uppercase;
@@ -36,6 +43,6 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(to right, #ff00ff, #00ffff);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #ff00ff, #00ffff);
     box-shadow: 0 0 10px #00ffff;
 }
