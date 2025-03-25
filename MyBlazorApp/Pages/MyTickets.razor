@@ -35,7 +35,7 @@ else
     {
         try
         {
-            tickets = await Http.GetFromJsonAsync<List<Ticket>>("https://localhost:5235/tickets");
+            tickets = await Http.GetFromJsonAsync<List<Ticket>>("http://localhost:5235/tickets");
         }
         catch (Exception ex)
         {
