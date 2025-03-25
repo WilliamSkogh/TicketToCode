@@ -53,15 +53,18 @@ public class EventsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]  
     public async Task<IActionResult> DeleteEvent(int id)
+        {
+    var ev = await _context.Events.FindAsync(id);
+    if (ev == null)
     {
-        var eventToDelete = await _context.Events.FindAsync(id);
-        if (eventToDelete == null)
-            return NotFound();
-
-        _context.Events.Remove(eventToDelete);
-        await _context.SaveChangesAsync();
-        return NoContent();
+        return NotFound();
     }
-}
+
+    _context.Events.Remove(ev);
+    await _context.SaveChangesAsync();
+
+    return NoContent();
+    }
+    }
+
