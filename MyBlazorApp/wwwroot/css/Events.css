@@ -1,4 +1,11 @@
 
+body {
+  background: linear-gradient(to bottom, #000000, #1a0000);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
 .event-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -7,18 +14,72 @@
     max-width: 90%;
 }
 
+
+
+.event-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;       
+    gap: 2rem;                     
+    padding: 2rem;
+    max-width: 1400px;             
+    margin: 0 auto;                
+}
+
+
 .event-card {
-    background: linear-gradient(145deg, #ff00ff, #ff6600, #00ffff);
-    border-radius: 12px;
-    padding: 20px;
-    color: black;
-    font-weight: bold;
-    text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #0a0a0a;
+    border: 1px solid #ff0000;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 240px; 
+    color: white;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .event-card:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.7);
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.event-card h3 {
+    font-size: 1.2rem;
+    color: #ff0000;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.event-card p {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+    color: #ddd;
+    text-align: center;
+}
+
+.event-card .event-date {
+    font-size: 0.8rem;
+    color: #888;
+    text-align: center;
+}
+
+.event-card .btn {
+    margin-top: 0.8rem;
+    display: block;
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.event-card .btn:hover {
+    background-color: #cc0000;
 }

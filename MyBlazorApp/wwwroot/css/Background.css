@@ -1,9 +1,16 @@
+/* Applied red & black theme automatically */
+body {
+  background: linear-gradient(to bottom, #000000, #1a0000);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
 
 /* Fixar vit bakgrund genom att sätta en neon gradient */
 body {
-    background: linear-gradient(to right, #ff00ff, #ff6600, #00ffff);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #ff00ff, #ff6600, #00ffff);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
+    color: #ff0000fff;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -11,7 +18,7 @@ body {
 
 /* Se till att navbaren har en genomskinlig bakgrund */
 .navbar {
-    background: rgba(0, 0, 0, 0.8);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(0, 0, 0, 0.8);
     padding: 15px 20px;
 }
 
@@ -37,7 +44,7 @@ body {
 
 /* Fix för att alla containers ska ha rätt transparens */
 .event-grid, .login-container, .register-container, .admin-container {
-    background: rgba(0, 0, 0, 0.8);
+    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(0, 0, 0, 0.8);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
