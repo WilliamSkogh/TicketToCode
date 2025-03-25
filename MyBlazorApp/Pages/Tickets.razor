@@ -1,5 +1,6 @@
 @page "/tickets"
 @using TicketToCode.Core.Models
+@using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
@@ -30,20 +31,16 @@
         <label>Phone:</label><br />
         <InputText @bind-Value="@ticket.Phone" /><br /><br />
     </div>
-    <div>
-        <label>Email:</label><br />
-        <InputText @bind-Value="@ticket.Email" /><br /><br />
-    </div>
 
     <div>
         <label>Event:</label><br />
         @if (events == null || events.Count == 0)
         {
-            <p>Loading events...</p> 
+            <p>Loading events...</p>
         }
         else
         {
-            <InputSelect @bind-Value="@ticket.EventId" required>
+            <InputSelect @bind-Value="@ticket.EventId">
                 <option value="">Select an event</option>
                 @foreach (var evt in events)
                 {
@@ -73,30 +70,29 @@
 
 @code {
     private Ticket ticket = new();
-    private List<EventModel> events = new();
+    private List<Event> events = new();
 
     private string? _successMessage;
     private string? _errorMessage;
-
-    private class EventModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var response = await Http.GetAsync("https://localhost:5235/events");
+            var response = await Http.GetAsync("http://localhost:5235/events");
             if (response.IsSuccessStatusCode)
             {
-                events = await response.Content.ReadFromJsonAsync<List<EventModel>>() ?? new();
+                events = await response.Content.ReadFromJsonAsync<List<Event>>() ?? new();
+                Console.WriteLine($"✅ Loaded {events.Count} events");
+            }
+            else
+            {
+                Console.WriteLine($"❌ Failed to load events: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error fetching events: {ex.Message}");
+            Console.WriteLine($"❌ Error fetching events: {ex.Message}");
         }
     }
 
@@ -119,7 +115,7 @@
         }
         catch
         {
-            _errorMessage = "Something went wrong.";
+            _errorMessage = "Something went wrong while booking.";
             _successMessage = null;
         }
     }

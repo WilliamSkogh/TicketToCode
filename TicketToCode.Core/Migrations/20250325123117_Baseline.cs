@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace TicketToCode.Api.Migrations
+namespace TicketToCode.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateUserTable : Migration
+    public partial class Baseline : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -4,33 +4,23 @@ namespace TicketToCode.Core.Models;
 
 public class Ticket
 {
-    public int TicketId { get; set; }
-    public string UserId { get; set; } = string.Empty;
-    public string? UserEmail { get; set; }
+    public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty; 
+    public DateTime BookingDate { get; set; } = DateTime.UtcNow;
 
-    [Required]
-    public int EventId { get; set; }
+    public int EventId { get; set; } 
+    public Event? Event { get; set; } 
 
-    [Required]
+    public List<DateTime> SelectedDays { get; set; } = new(); 
+
     public string FirstName { get; set; } = string.Empty;
-
-    [Required]
     public string LastName { get; set; } = string.Empty;
-
-    [Required]
-    [Phone]
     public string Phone { get; set; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
-
-    public int Quantity { get; set; }
-
+    public int Quantity { get; set; } = 1;
     public PaymentMethod PaymentMethod { get; set; }
-
-    public DateTime BookingDate { get; set; } = DateTime.UtcNow;
 }
+
 
 public enum PaymentMethod
 {
