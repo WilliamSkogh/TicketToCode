@@ -1,52 +1,35 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using TicketToCode.Core.Data;
+using Microsoft.EntityFrameworkCore;
 using TicketToCode.Core.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace TicketToCode.Api.Controllers;
-
-[ApiController]
-[Route("tickets")]
-public class TicketsController : ControllerBase
+namespace TicketToCode.Api.Controllers
 {
-    private readonly TicketToCodeDbContext _context;
-
-    public TicketsController(TicketToCodeDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TicketController : ControllerBase
     {
-        _context = context;
+        private readonly TicketToCodeDbContext _context;
+
+        public TicketController(TicketToCodeDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/ticket
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
+        {
+            return await _context.Tickets.ToListAsync();
+        }
+        [HttpPost]
+        public async Task<ActionResult<Ticket>> BuyTicket(Ticket ticket)
+        {
+            _context.Tickets.Add(ticket);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(BuyTicket), new { id = ticket.Id }, ticket);
+        }
+
     }
-
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> PostTicket([FromBody] Ticket ticket)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized();
-
-        ticket.UserId = userId;
-        ticket.BookingDate = DateTime.UtcNow;
-
-        _context.Tickets.Add(ticket);
-        await _context.SaveChangesAsync();
-
-        return Ok(ticket);
-    }
-
-    [HttpGet("my")]
-    [Authorize]
-    public IActionResult GetMyTickets()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null) return Unauthorized();
-
-        var myTickets = _context.Tickets
-            .Where(t => t.UserId == userId)
-            .ToList();
-
-        return Ok(myTickets);
-    }
-
-    [HttpGet]
-    public IActionResult GetAllTickets() => Ok(_context.Tickets.ToList());
 }
