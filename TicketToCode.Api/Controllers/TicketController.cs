@@ -91,6 +91,24 @@ public async Task<ActionResult<IEnumerable<TicketDto>>> GetMyTickets()
 
     return Ok(dtos);
 }
+[Authorize]
+[HttpDelete("{id}")]
+public async Task<IActionResult> DeleteTicket(int id)
+{
+    var ticket = await _context.Tickets.FindAsync(id);
+
+    if (ticket == null)
+        return NotFound();
+
+    if (ticket.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+        return Forbid();
+
+    _context.Tickets.Remove(ticket);
+    await _context.SaveChangesAsync();
+
+    return NoContent();
+}
+
 
 
 

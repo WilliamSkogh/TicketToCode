@@ -1,4 +1,3 @@
-
 @page "/mytickets"
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime JS
@@ -10,7 +9,7 @@
 @using System.Net.Http.Json
 
 <head>
-    <link rel="stylesheet" href="css/mytickets.css"
+    <link rel="stylesheet" href="css/mytickets.css">
     <link rel="stylesheet" href="css/Background.css">
 </head>
 
@@ -57,6 +56,7 @@
                             }
                         </ul>
                     </div>
+                    <button class="cancel-button" @onclick="() => CancelTicket(ticket.Id)">Avboka</button>
                 </div>
             }
         </div>
@@ -73,34 +73,56 @@
     private string errorMessage;
 
     protected override async Task OnInitializedAsync()
-{
-    try
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("TicketToCode.ServerAPI");
+            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                client.DefaultRequestHeaders.Authorization = 
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+
+            var response = await client.GetAsync("api/ticket/mytickets");
+            var content = await response.Content.ReadAsStringAsync();
+
+            tickets = JsonSerializer.Deserialize<List<TicketDto>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() } // 
+            });
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task CancelTicket(int id)
     {
         var client = ClientFactory.CreateClient("TicketToCode.ServerAPI");
         var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
 
         if (!string.IsNullOrWhiteSpace(token))
         {
-            client.DefaultRequestHeaders.Authorization = 
+            client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
-        // 💥 NY DESERIALISERING med JsonStringEnumConverter
-        var response = await client.GetAsync("api/ticket/mytickets");
-        var content = await response.Content.ReadAsStringAsync();
+        var response = await client.DeleteAsync($"api/ticket/{id}");
 
-        tickets = JsonSerializer.Deserialize<List<TicketDto>>(content, new JsonSerializerOptions
+        if (response.IsSuccessStatusCode)
         {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() } // 
-        });
+            tickets = tickets?.Where(t => t.Id != id).ToList();
+        }
+        else
+        {
+            errorMessage = "Kunde inte avboka.";
+        }
     }
-    catch (Exception ex)
-    {
-        errorMessage = ex.Message;
-    }
-}
-
 
     private string GetSwedishDayName(DaySelection day) => day switch
     {
