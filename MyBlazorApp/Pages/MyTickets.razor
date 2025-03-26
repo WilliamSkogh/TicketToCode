@@ -1,4 +1,81 @@
 @page "/mytickets"
 @inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h2>Your Tickets</h2>
+
+@if (_loading)
+{
+    <p>Laddar biljetter...</p>
+}
+else if (_errorMessage != null)
+{
+    <p style="color:red;">@_errorMessage</p>
+}
+else if (_tickets.Any())
+{
+    <ul>
+        @foreach (var ticket in _tickets)
+        {
+            <li>
+                <strong>@ticket.TicketType dag(ar)</strong> – 
+                @string.Join(", ", ticket.SelectedDays.Select(d => d.ToString()))
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Du har inga biljetter ännu.</p>
+}
+
+@code {
+    private List<Ticket> _tickets = new();
+    private bool _loading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (!user.Identity?.IsAuthenticated ?? true)
+            {
+                _errorMessage = "Du måste vara inloggad för att se dina biljetter.";
+                return;
+            }
+
+            var userId = user.FindFirst("sub")?.Value ?? user.Identity.Name;
+
+            var response = await Http.GetFromJsonAsync<List<Ticket>>($"api/Ticket");
+
+            if (response != null)
+            {
+                _tickets = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Fel vid hämtning: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    public class Ticket
+    {
+        public int TicketType { get; set; }
+        public List<DaySelection> SelectedDays { get; set; } = new();
+    }
+
+    public enum DaySelection
+    {
+        Friday,
+        Saturday,
+        Sunday
+    }
+}
