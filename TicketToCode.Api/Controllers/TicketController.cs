@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TicketToCode.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using TicketToCode.Api.Models;
 
 namespace TicketToCode.Api.Controllers
 {
@@ -65,6 +68,31 @@ namespace TicketToCode.Api.Controllers
 
     return Ok(soldPerDay);
 }
+
+[Authorize]
+[HttpGet("mytickets")]
+public async Task<ActionResult<IEnumerable<TicketDto>>> GetMyTickets()
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    var tickets = await _context.Tickets
+        .Where(t => t.UserId == userId)
+        .ToListAsync();
+
+    var dtos = tickets.Select(t => new TicketDto
+    {
+        Id = t.Id,
+        UserId = t.UserId,
+        BookingDate = t.BookingDate,
+        TicketType = t.TicketType.ToString(), // 👈 enum till string
+        UserEmail = t.UserEmail,
+        SelectedDays = t.SelectedDays
+    });
+
+    return Ok(dtos);
+}
+
+
 
 public class TicketsSoldDto
 {

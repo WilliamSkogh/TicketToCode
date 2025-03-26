@@ -1,4 +1,112 @@
+// ✅ MyTickets.razor
 @page "/mytickets"
-@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime JS
+@using MyBlazorApp.Models
+@using TicketToCode.Core.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using System.Net.Http.Json
 
-<h2>Your Tickets</h2>
+<head>
+    <link rel="stylesheet" href="css/mytickets.css"
+    <link rel="stylesheet" href="css/Background.css">
+</head>
+
+<div class="ticket-page-wrapper">
+    <h2 class="ticket-heading">Mina biljetter</h2>
+
+    <AuthorizeView>
+        <Authorized>
+            <p class="ticket-auth">
+                Du är inloggad som: @context.User.FindFirst("sub")?.Value
+            </p>
+        </Authorized>
+        <NotAuthorized>
+            <p class="ticket-unauth">Du är inte inloggad.</p>
+        </NotAuthorized>
+    </AuthorizeView>
+
+    @if (errorMessage != null)
+    {
+        <p class="ticket-error">Fel: @errorMessage</p>
+    }
+    else if (tickets == null)
+    {
+        <p>Laddar biljetter...</p>
+    }
+    else if (!tickets.Any())
+    {
+        <p class="ticket-empty">Du har inga bokningar ännu.</p>
+    }
+    else
+    {
+        <div class="ticket-list">
+            @foreach (var ticket in tickets)
+            {
+                <div class="ticket-card">
+                    <div class="ticket-type">@ticket.TicketType</div>
+                    <div class="ticket-date">Bokad: @ticket.BookingDate.ToShortDateString()</div>
+                    <div class="ticket-days">
+                        <div class="font-medium">Gäller för:</div>
+                        <ul>
+                            @foreach (var day in ticket.SelectedDays)
+                            {
+                                <li>@GetSwedishDayName(day)</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <h5 class="ticket-debug">Debug: JSON-data</h5>
+        <pre>@JsonSerializer.Serialize(tickets, new JsonSerializerOptions { WriteIndented = true })</pre>
+    }
+</div>
+
+
+@code {
+    private List<TicketDto> tickets;
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+{
+    try
+    {
+        var client = ClientFactory.CreateClient("TicketToCode.ServerAPI");
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            client.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // 💥 NY DESERIALISERING med JsonStringEnumConverter
+        var response = await client.GetAsync("api/ticket/mytickets");
+        var content = await response.Content.ReadAsStringAsync();
+
+        tickets = JsonSerializer.Deserialize<List<TicketDto>>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() } // 
+        });
+    }
+    catch (Exception ex)
+    {
+        errorMessage = ex.Message;
+    }
+}
+
+
+    private string GetSwedishDayName(DaySelection day) => day switch
+    {
+        DaySelection.Friday => "Fredag",
+        DaySelection.Saturday => "Lördag",
+        DaySelection.Sunday => "Söndag",
+        _ => day.ToString()
+    };
+}
