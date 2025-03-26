@@ -11,6 +11,7 @@
 
 /* Widget högst upp till höger men lite längre ner */
 .ticket-stats-box {
+    box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000 inset;
     position: absolute;
     top: 6rem;
     right: 2rem;
@@ -26,6 +27,7 @@
 
 /* Centrera formuläret och ge det glow + spacing */
 .ticket-form {
+    box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000 inset;
     background-color: #0a0a0a;
     padding: 2.5rem;
     border-radius: 10px;
@@ -53,11 +55,20 @@ select {
 }
 
 input[type="checkbox"] {
-    accent-color: red;
+    appearance: none;
     width: 18px;
     height: 18px;
-    margin-right: 0.5rem;
-}
+    border: 2px solid #ff0000;
+    border-radius: 4px;
+    background-color: black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: #ff0000;
+    box-shadow: 0 0 5px #ff0000;
+  }
 
 label {
     display: inline-flex;
