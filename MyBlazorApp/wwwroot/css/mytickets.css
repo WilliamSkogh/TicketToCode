@@ -84,3 +84,16 @@
     border-radius: 0.5rem;
     overflow-x: auto;
 }
+
+.cancel-button {
+    margin-top: 1rem;
+    background-color: #dc2626;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+.cancel-button:hover {
+    background-color: #b91c1c;
+}
