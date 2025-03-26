@@ -1,3 +1,4 @@
+// ✅ TicketToCode.Api/Program.cs
 using TicketToCode.Api.Endpoints;
 using TicketToCode.Api.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,27 +11,26 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddUserSecrets<Program>(); // User secrets
+// 🔐 Secret config
+builder.Configuration.AddUserSecrets<Program>();
 
-// PostgreSQL
+// 🔌 Databasanslutning (PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Database connection string not found.");
 
-//DbContext Dependency Injection och migrations
-// DbContext Dependency Injection
 builder.Services.AddDbContext<TicketToCodeDbContext>(options =>
     options.UseNpgsql(connectionString, b => b.MigrationsAssembly("TicketToCode.Core")));
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 
+// 🌐 Språkformat
 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
 
+// 🔐 JWT-auth config
 var secretKey = builder.Configuration["JwtSettings:SecretKey"]
     ?? throw new InvalidOperationException("JWT SecretKey is missing.");
 
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -45,34 +45,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
             ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = key 
+            IssuerSigningKey = key
         };
     });
 
 builder.Services.AddAuthorization();
 
+// 🛠 Services & CORS
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazor",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+        policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-
-builder.Services.AddAuthentication("Cookies")
-    .AddCookie("Cookies", options =>
-    {
-        options.Cookie.Name = "auth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.Strict;
-    });
-
-builder.Services.AddAuthorization();
+// 🌐 Swagger + JSON enum stöd
 builder.Services.AddOpenApi();
 builder.Services.AddControllers()
-
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

@@ -1,0 +1,86 @@
+
+.ticket-page-wrapper {
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    max-width: 768px;
+    margin: 2rem auto;
+}
+
+.ticket-heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.ticket-auth {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #16a34a;
+}
+
+.ticket-unauth {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #dc2626;
+}
+
+.ticket-error {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.ticket-empty {
+    text-align: center;
+    color: #6b7280;
+}
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ticket-card {
+    background-color: #111827; 
+    color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    border: 1px solid #1f2937; 
+}
+
+
+.ticket-type {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.ticket-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.ticket-days {
+    margin-top: 0.5rem;
+}
+
+.ticket-days ul {
+    list-style: disc;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.ticket-debug {
+    margin-top: 2rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
