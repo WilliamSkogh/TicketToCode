@@ -1,122 +1,147 @@
 @page "/tickets"
 @using TicketToCode.Core.Models
-@using Microsoft.AspNetCore.Components.Forms
 @inject HttpClient Http
-@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h1>Book your event with us</h1>
+<h3>Tickets</h3>
+
+<label for="ticketType">Hur många dagar?:</label>
+<select @bind="_selectedTicketType" id="ticketType">
+    <option value="1">1 dag</option>
+    <option value="2">2 dagar</option>
+    <option value="3">3 dagar</option>
+</select>
+
+@if (_selectedTicketType == 1 || _selectedTicketType == 2)
+{
+    @foreach (var day in _availableDays)
+    {
+        var isChecked = _selectedDays.Contains(day.Value);
+        var isDisabled = _selectedTicketType == 2 && !isChecked && _selectedDays.Count >= 2;
+
+        <label style="margin-right: 1rem;">
+            <input type="checkbox"
+                   checked="@isChecked"
+                   @onchange="(e => CheckboxChanged(day.Value, e.Value as bool? ?? false))"
+                   disabled="@isDisabled" />
+            @day.Label
+        </label>
+    }
+
+}
+
+<button @onclick="BuyTicket">Köp biljett</button>
 
 @if (_successMessage != null)
 {
     <p style="color: green;">@_successMessage</p>
 }
+
 @if (_errorMessage != null)
 {
     <p style="color: red;">@_errorMessage</p>
 }
 
-<EditForm Model="@ticket" OnValidSubmit="BuyTicket">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div>
-        <label>First name:</label><br />
-        <InputText @bind-Value="@ticket.FirstName" /><br /><br />
-    </div>
-    <div>
-        <label>Last name:</label><br />
-        <InputText @bind-Value="@ticket.LastName" /><br /><br />
-    </div>
-    <div>
-        <label>Phone:</label><br />
-        <InputText @bind-Value="@ticket.Phone" /><br /><br />
-    </div>
-
-    <div>
-        <label>Event:</label><br />
-        @if (events == null || events.Count == 0)
-        {
-            <p>Loading events...</p>
-        }
-        else
-        {
-            <InputSelect @bind-Value="@ticket.EventId">
-                <option value="">Select an event</option>
-                @foreach (var evt in events)
-                {
-                    <option value="@evt.Id">@evt.Name</option>
-                }
-            </InputSelect><br /><br />
-        }
-    </div>
-
-    <div>
-        <label>Number of tickets:</label><br />
-        <InputNumber @bind-Value="@ticket.Quantity" /><br /><br />
-    </div>
-    <div>
-        <label>Payment method:</label><br />
-        <InputSelect @bind-Value="@ticket.PaymentMethod">
-            <option value="">Select payment method</option>
-            @foreach (var method in Enum.GetValues<PaymentMethod>())
-            {
-                <option value="@method">@method</option>
-            }
-        </InputSelect><br /><br />
-    </div>
-
-    <button type="submit">Book Ticket</button>
-</EditForm>
-
 @code {
-    private Ticket ticket = new();
-    private List<Event> events = new();
+    private int _selectedTicketType = 1;
+    private List<DaySelection> _selectedDays = new();
+
+    private List<DayOption> _availableDays = new()
+    {
+        new DayOption { Label = "Fredag", Value = DaySelection.Friday },
+        new DayOption { Label = "Lördag", Value = DaySelection.Saturday },
+        new DayOption { Label = "Söndag", Value = DaySelection.Sunday }
+    };
 
     private string? _successMessage;
     private string? _errorMessage;
-
-    protected override async Task OnInitializedAsync()
+    
+    private async Task BuyTicket()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            _errorMessage = "Logga in för att boka biljetter";
+            return;
+        }
+
+        var userId = user.FindFirst("sub")?.Value ?? user.Identity.Name;
+        var email = user.FindFirst("email")?.Value ?? "okänd@domän.se";
+
+        // Om 3 dagar väljs, välj alla automatiskt
+        if (_selectedTicketType == 3)
+        {
+            _selectedDays = _availableDays.Select(d => d.Value).ToList();
+        }
+
+        var newTicket = new Ticket
+        {
+            UserId = userId,
+            UserEmail = email,
+            TicketType = _selectedTicketType,
+            SelectedDays = _selectedDays
+        };
+
         try
         {
-            var response = await Http.GetAsync("http://localhost:5235/events");
+            var response = await Http.PostAsJsonAsync("api/ticket", newTicket);
             if (response.IsSuccessStatusCode)
             {
-                events = await response.Content.ReadFromJsonAsync<List<Event>>() ?? new();
-                Console.WriteLine($"✅ Loaded {events.Count} events");
+                _successMessage = "Biljett köpt!";
+                _errorMessage = null;
             }
             else
             {
-                Console.WriteLine($"❌ Failed to load events: {response.StatusCode}");
+                var details = await response.Content.ReadAsStringAsync();
+                _errorMessage = $"Kunde inte köpa biljett. API sa: {details}";
+                _successMessage = null;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error fetching events: {ex.Message}");
+            _errorMessage = $"Fel: {ex.Message}";
         }
     }
 
-    private async Task BuyTicket()
+    public class Ticket
     {
-        try
+        public string UserId { get; set; } = string.Empty;
+        public string? UserEmail { get; set; }
+        public int TicketType { get; set; }
+        public List<DaySelection> SelectedDays { get; set; } = new();
+    }
+
+    public class DayOption
+    {
+        public string? Label { get; set; }
+        public DaySelection Value { get; set; }
+    }
+    
+    private void CheckboxChanged(DaySelection day, bool isChecked)
+    {
+        if (_selectedTicketType == 1)
         {
-            var response = await Http.PostAsJsonAsync("https://localhost:5235/tickets", ticket);
-            if (response.IsSuccessStatusCode)
+            _selectedDays.Clear();
+            if (isChecked)
             {
-                _successMessage = "Ticket booked successfully!";
-                _errorMessage = null;
-                ticket = new(); 
+                _selectedDays.Add(day);
+            }
+        }
+        else if (_selectedTicketType == 2)
+        {
+            if (isChecked)
+            {
+                if (_selectedDays.Count < 2)
+                {
+                    _selectedDays.Add(day);
+                }
             }
             else
             {
-                _errorMessage = "Booking failed.";
-                _successMessage = null;
+                _selectedDays.Remove(day);
             }
         }
-        catch
-        {
-            _errorMessage = "Something went wrong while booking.";
-            _successMessage = null;
-        }
     }
+
 }
