@@ -6,12 +6,12 @@
 @inject HttpClient Http
 @attribute [Authorize]
 
-<video autoplay muted loop playsinline class="event-bg-video">
-    <source src="Videos/goofyahhrave.mp4" type="video/mp4" />
-    Din webbläsare stöder inte videouppspelning.
-</video>
-
-<div class="video-overlay"></div>
+<div class="event-video">
+    <video autoplay loop muted playsinline>
+        <source src="videos/goofyahhrave.mp4" type="video/mp4">
+        Din webbläsare stöder inte video.
+    </video>
+</div>
 
 <head>
     <link rel="stylesheet" href="css/Events.css">
