@@ -24,3 +24,24 @@ body {
         z-index: -1; 
     }
 
+    .ticket-page {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+    
+    .ticket-form {
+        flex: 1 1 60%;
+        min-width: 300px;
+    }
+    
+    .ticket-stats-box {
+        flex: 1 1 30%;
+        min-width: 250px;
+        background-color: #000000;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
