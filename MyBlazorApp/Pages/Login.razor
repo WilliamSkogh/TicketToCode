@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="css/Background.css">
 </head>
-<div class="login-container">
+
+<div class="page-wrapper">
+    <div class="login-box">
 <h3>Logga in</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -20,6 +22,8 @@
 <input @bind="password" type="password" />
 <button @onclick="LoginUser">Logga in</button>
 </div>
+    </div>
+
 @code {
     private string username = "";
     private string password = "";

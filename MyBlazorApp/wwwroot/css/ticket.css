@@ -1,0 +1,119 @@
+.page-wrapper {
+    position: relative;
+    margin-top: 5rem;
+    padding: 2rem;
+    max-width: 100%;
+    min-height: 100vh;
+    background: transparent;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* 🔥 Widget: statbox uppe till höger */
+.ticket-stats-box {
+    position: absolute;
+    top: 6rem;
+    right: 2rem;
+    width: 400px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+    z-index: 5;
+    text-align: center;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+}
+
+/* 💫 Form: glow, center, spacing */
+.ticket-form {
+    background: rgba(10, 10, 10, 0.9);
+    padding: 2.5rem;
+    border-radius: 16px;
+    color: white;
+    width: 100%;
+    max-width: 600px;
+    margin: 10rem auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    animation: pop-in 0.6s ease-out;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 🎛️ Inputs */
+select {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: white;
+    border: 1px solid #ff1a1a;
+    transition: all 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: 0 0 10px #ff1a1a;
+    border-color: #ff1a1a;
+}
+
+/* ✅ Checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ff1a1a;
+    border-radius: 4px;
+    background-color: black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 0.6rem;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #ff1a1a;
+    box-shadow: 0 0 6px #ff1a1a;
+}
+
+label {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    color: white;
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+
+/* 🎯 Button */
+button {
+    background-color: #ff1a1a;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+}
+
+button:hover {
+    background-color: #e60000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+    transform: scale(1.03);
+}

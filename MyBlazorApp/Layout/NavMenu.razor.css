@@ -1,73 +1,49 @@
-/* NAVBAR STYLING */
-.top-row {
-    background-color: #000000;
-    border-bottom: 1px solid #ff0000;
+
+
+nav {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    box-shadow: 0 0 20px rgba(255, 0, 100, 0.4);
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 4rem;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid rgba(255, 0, 100, 0.2);
 }
 
-.navbar-toggler {
-    background-color: rgba(255, 0, 0, 0.2);
-    border: 1px solid #ff0000;
+
+nav a {
     color: white;
-}
-
-/* BRANDING (om du använder navbar-brand) */
-.navbar-brand {
-    color: #ff0000;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-right: 2rem;
-    text-shadow: 0 0 5px #ff0000;
-}
-
-/* HUVUDMENYN */
-.nav-scrollable {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-    padding: 1rem 0;
-    background-color: #0a0a0a;
-}
-
-/* INDIVIDUELLA NAV-LÄNKAR */
-.nav-item {
-    font-size: 1.1rem;
-    text-align: center;
-    list-style: none;
-}
-
-.nav-item ::deep a {
-    color: #ff0000;
-    padding: 0.5rem 1.5rem;
-    border-radius: 8px;
+    margin: 0 2rem;
     text-decoration: none;
-    font-weight: 600;
-    transition: 0.2s ease;
-    border: 1px solid transparent;
+    font-size: 1.2rem;
+    font-weight: 700;
+    position: relative;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 4px rgba(255, 0, 100, 0.6);
 }
 
-.nav-item ::deep a.active {
-    background-color: #ff0000;
-    color: #000000;
+
+nav a::before {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #ff0055, #ff2200);
+    transition: width 0.3s ease;
+    border-radius: 2px;
 }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255, 0, 0, 0.2);
-    border: 1px solid #ff0000;
-    color: white;
-    box-shadow: 0 0 10px #ff0000;
+nav a:hover {
+    color: #ff4d88;
+    transform: scale(1.05);
 }
 
-/* RESPONSIV FÖR SMÅ SKÄRMAR */
-@media (max-width: 768px) {
-    .nav-scrollable {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 1rem;
-    }
+nav a:hover::before {
+    width: 100%;
 }

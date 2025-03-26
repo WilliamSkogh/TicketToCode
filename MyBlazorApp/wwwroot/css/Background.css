@@ -1,38 +1,38 @@
-/* Applied red & black theme automatically */
-body {
-  background: linear-gradient(to bottom, #000000, #1a0000);
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
-}
 
-
-/* Fixar vit bakgrund genom att sätta en neon gradient */
 body {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #ff00ff, #ff6600, #00ffff);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #ff0000fff;
+    
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
+    position: relative;
+    min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* Se till att navbaren har en genomskinlig bakgrund */
+/* 🎛️ Transparent Navbar */
 .navbar {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
     padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Se till att bakgrunden för alla sidor inte blir vit */
+/* 🌆 Blurry Festival Background */
 .background-container {
     position: fixed;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background: url('/Pictures/festival-bg.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: -3; /* Lägre än videons -2 */
+    filter: blur(8px) brightness(0.4);
 }
+      
 
-/* Om bild används som bakgrund */
+/* 🖼️ Optional full-screen image class (not required with background-container) */
 .fullscreen-bg {
     width: 100vw;
     height: 100vh;
@@ -42,10 +42,29 @@ body {
     left: 0;
 }
 
-/* Fix för att alla containers ska ha rätt transparens */
-.event-grid, .login-container, .register-container, .admin-container {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+/* 🧱 Standard container styling */
+.event-grid,
+.login-container,
+.register-container,
+.admin-container,
+.page-wrapper {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
+
+/* 🎯 Centrera alla rubriker och ge glow */
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff1a1a, 0 0 20px rgba(255, 0, 0, 0.5);
+    letter-spacing: 1px;
+}
+
