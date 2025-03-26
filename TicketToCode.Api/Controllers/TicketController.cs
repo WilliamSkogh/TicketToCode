@@ -48,5 +48,29 @@ namespace TicketToCode.Api.Controllers
             return CreatedAtAction(nameof(BuyTicket), new { id = ticket.Id }, ticket);
         }
 
+    [HttpGet("sold-by-day")]
+    public async Task<ActionResult<IEnumerable<TicketsSoldDto>>> GetSoldTicketsPerDay()
+{
+    var tickets = await _context.Tickets.ToListAsync(); // Ladda alla biljetter först
+
+    var soldPerDay = tickets
+        .SelectMany(t => t.SelectedDays)
+        .GroupBy(day => day)
+        .Select(g => new TicketsSoldDto
+        {
+            Day = g.Key.ToString(),
+            SoldTickets = g.Count()
+        })
+        .ToList();
+
+    return Ok(soldPerDay);
+}
+
+public class TicketsSoldDto
+{
+    public string Day { get; set; } = string.Empty;
+    public int SoldTickets { get; set; }
+}
+
     }
 }
