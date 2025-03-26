@@ -16,13 +16,18 @@
 {
     @foreach (var day in _availableDays)
     {
+        var isChecked = _selectedDays.Contains(day.Value);
+        var isDisabled = _selectedTicketType == 2 && !isChecked && _selectedDays.Count >= 2;
+
         <label style="margin-right: 1rem;">
             <input type="checkbox"
-                   @onchange="@(() => ToggleDay(day.Value))"
-                   checked="@_selectedDays.Contains(day.Value)" />
+                   checked="@isChecked"
+                   @onchange="(e => CheckboxChanged(day.Value, e.Value as bool? ?? false))"
+                   disabled="@isDisabled" />
             @day.Label
         </label>
     }
+
 }
 
 <button @onclick="BuyTicket">Köp biljett</button>
@@ -50,15 +55,7 @@
 
     private string? _successMessage;
     private string? _errorMessage;
-
-    private void ToggleDay(DaySelection day)
-    {
-        if (_selectedDays.Contains(day))
-            _selectedDays.Remove(day);
-        else
-            _selectedDays.Add(day);
-    }
-
+    
     private async Task BuyTicket()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -120,4 +117,31 @@
         public string? Label { get; set; }
         public DaySelection Value { get; set; }
     }
+    
+    private void CheckboxChanged(DaySelection day, bool isChecked)
+    {
+        if (_selectedTicketType == 1)
+        {
+            _selectedDays.Clear();
+            if (isChecked)
+            {
+                _selectedDays.Add(day);
+            }
+        }
+        else if (_selectedTicketType == 2)
+        {
+            if (isChecked)
+            {
+                if (_selectedDays.Count < 2)
+                {
+                    _selectedDays.Add(day);
+                }
+            }
+            else
+            {
+                _selectedDays.Remove(day);
+            }
+        }
+    }
+
 }
