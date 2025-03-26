@@ -1,7 +1,9 @@
 @page "/tickets"
+@using MyBlazorApp.Services
 @using TicketToCode.Core.Models
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject EventService EventService
 
 <h3>Tickets</h3>
 
@@ -42,6 +44,24 @@
     <p style="color: red;">@_errorMessage</p>
 }
 
+<div class="ticket-stats-box">
+    <h3>Sålda biljetter per dag</h3>
+
+    @if (soldTickets != null)
+    {
+        <ul>
+            @foreach (var item in soldTickets.OrderBy(x => x.Day))
+            {
+                <li>@item.Day: @item.SoldTickets biljetter sålda av 500</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Laddar...</p>
+    }
+</div>
+
 @code {
     private int _selectedTicketType = 1;
     private List<DaySelection> _selectedDays = new();
@@ -55,7 +75,14 @@
 
     private string? _successMessage;
     private string? _errorMessage;
-    
+
+    private List<EventService.TicketsSoldDto>? soldTickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        soldTickets = await EventService.GetTicketsSoldPerDay();
+    }
+
     private async Task BuyTicket()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -69,7 +96,6 @@
         var userId = user.FindFirst("sub")?.Value ?? user.Identity.Name;
         var email = user.FindFirst("email")?.Value ?? "okänd@domän.se";
 
-        // Om 3 dagar väljs, välj alla automatiskt
         if (_selectedTicketType == 3)
         {
             _selectedDays = _availableDays.Select(d => d.Value).ToList();
@@ -104,20 +130,6 @@
         }
     }
 
-    public class Ticket
-    {
-        public string UserId { get; set; } = string.Empty;
-        public string? UserEmail { get; set; }
-        public int TicketType { get; set; }
-        public List<DaySelection> SelectedDays { get; set; } = new();
-    }
-
-    public class DayOption
-    {
-        public string? Label { get; set; }
-        public DaySelection Value { get; set; }
-    }
-    
     private void CheckboxChanged(DaySelection day, bool isChecked)
     {
         if (_selectedTicketType == 1)
@@ -144,4 +156,18 @@
         }
     }
 
-}
+    public class Ticket
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string? UserEmail { get; set; }
+        public int TicketType { get; set; }
+        public List<DaySelection> SelectedDays { get; set; } = new();
+    }
+
+    public class DayOption
+    {
+        public string? Label { get; set; }
+        public DaySelection Value { get; set; }
+    }
+    }
+    

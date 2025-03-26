@@ -30,4 +30,16 @@ public class EventService
 {
     return await _httpClient.DeleteAsync($"api/events/{id}");
 }
+
+public async Task<List<TicketsSoldDto>> GetTicketsSoldPerDay()
+{
+    var result = await _httpClient.GetFromJsonAsync<List<TicketsSoldDto>>("http://localhost:5235/api/ticket/sold-by-day");
+    return result ?? new List<TicketsSoldDto>();
+}
+
+public class TicketsSoldDto
+{
+    public string Day { get; set; } = string.Empty;
+    public int SoldTickets { get; set; }
+}
 }
