@@ -1,5 +1,7 @@
 @page "/tickets"
+@using TicketToCode.Core.Models
 @inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>Tickets</h3>
 
@@ -12,95 +14,110 @@
 
 @if (_selectedTicketType == 1 || _selectedTicketType == 2)
 {
-@foreach (var day in _availableDays)
-{
-<label>
-    <input type="checkbox" @onchange="@(() => ToggleDay(day.Date))" checked="@_selectedDays.Contains(day.Date)" />
-</label>
+    @foreach (var day in _availableDays)
+    {
+        <label style="margin-right: 1rem;">
+            <input type="checkbox"
+                   @onchange="@(() => ToggleDay(day.Value))"
+                   checked="@_selectedDays.Contains(day.Value)" />
+            @day.Label
+        </label>
+    }
 }
-}
-
 
 <button @onclick="BuyTicket">Köp biljett</button>
 
 @if (_successMessage != null)
 {
-<p style="color: green;">@_successMessage</p>
+    <p style="color: green;">@_successMessage</p>
 }
 
 @if (_errorMessage != null)
 {
-<p style="color: red;">@_errorMessage</p>
+    <p style="color: red;">@_errorMessage</p>
 }
 
 @code {
-private int _selectedTicketType = 1;
-private List<DateTime> _selectedDays = new();
+    private int _selectedTicketType = 1;
+    private List<DaySelection> _selectedDays = new();
 
-private List<DayOption> _availableDays = new()
-{
-new DayOption { Label = "Dag 1", Date = new DateTime(2024, 6, 10) },
-new DayOption { Label = "Dag 2", Date = new DateTime(2024, 6, 11) },
-new DayOption { Label = "Dag 3", Date = new DateTime(2024, 6, 12) }
-};
+    private List<DayOption> _availableDays = new()
+    {
+        new DayOption { Label = "Fredag", Value = DaySelection.Friday },
+        new DayOption { Label = "Lördag", Value = DaySelection.Saturday },
+        new DayOption { Label = "Söndag", Value = DaySelection.Sunday }
+    };
 
-private string? _successMessage;
-private string? _errorMessage;
+    private string? _successMessage;
+    private string? _errorMessage;
 
-private void ToggleDay(DateTime date)
-{
-if (_selectedDays.Contains(date))
-{
-_selectedDays.Remove(date);
-}
-else
-{
-_selectedDays.Add(date);
-}
-}
+    private void ToggleDay(DaySelection day)
+    {
+        if (_selectedDays.Contains(day))
+            _selectedDays.Remove(day);
+        else
+            _selectedDays.Add(day);
+    }
 
-private async Task BuyTicket()
-{
-// Om 3 dagar väljs, välj alla automatiskt
-if (_selectedTicketType == 3)
-{
-_selectedDays = _availableDays.Select(d => d.Date).ToList();
-}
+    private async Task BuyTicket()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            _errorMessage = "Logga in för att boka biljetter";
+            return;
+        }
 
-var newTicket = new Ticket
-{
-TicketType = _selectedTicketType,
-SelectedDays = _selectedDays
-};
+        var userId = user.FindFirst("sub")?.Value ?? user.Identity.Name;
+        var email = user.FindFirst("email")?.Value ?? "okänd@domän.se";
 
-try
-{
-var response = await Http.PostAsJsonAsync("api/ticket", newTicket);
-if (response.IsSuccessStatusCode)
-{
-_successMessage = "Biljett köpt!";
-_errorMessage = null;
-}
-else
-{
-_errorMessage = "Kunde inte köpa biljett.";
-_successMessage = null;
-}
-}
-catch (Exception ex)
-{
-_errorMessage = $"Fel: {ex.Message}";
-}
-}
-public class Ticket
-{
-public int TicketType { get; set; }
-public List<DateTime>? SelectedDays { get; set; }
-}
+        // Om 3 dagar väljs, välj alla automatiskt
+        if (_selectedTicketType == 3)
+        {
+            _selectedDays = _availableDays.Select(d => d.Value).ToList();
+        }
 
-public class DayOption
-{
-public string? Label { get; set; }
-public DateTime Date { get; set; }
-}
+        var newTicket = new Ticket
+        {
+            UserId = userId,
+            UserEmail = email,
+            TicketType = _selectedTicketType,
+            SelectedDays = _selectedDays
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/ticket", newTicket);
+            if (response.IsSuccessStatusCode)
+            {
+                _successMessage = "Biljett köpt!";
+                _errorMessage = null;
+            }
+            else
+            {
+                var details = await response.Content.ReadAsStringAsync();
+                _errorMessage = $"Kunde inte köpa biljett. API sa: {details}";
+                _successMessage = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Fel: {ex.Message}";
+        }
+    }
+
+    public class Ticket
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string? UserEmail { get; set; }
+        public int TicketType { get; set; }
+        public List<DaySelection> SelectedDays { get; set; } = new();
+    }
+
+    public class DayOption
+    {
+        public string? Label { get; set; }
+        public DaySelection Value { get; set; }
+    }
 }

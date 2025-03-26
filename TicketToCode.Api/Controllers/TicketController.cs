@@ -16,6 +16,13 @@ namespace TicketToCode.Api.Controllers
         {
             _context = context;
         }
+        
+        public record TicketRequest(
+            string UserId,
+            string? UserEmail,
+            TicketType TicketType,
+            List<DaySelection> SelectedDays
+        );
 
         // GET: api/ticket
         [HttpGet]
@@ -24,10 +31,20 @@ namespace TicketToCode.Api.Controllers
             return await _context.Tickets.ToListAsync();
         }
         [HttpPost]
-        public async Task<ActionResult<Ticket>> BuyTicket(Ticket ticket)
+        public async Task<ActionResult<Ticket>> BuyTicket(TicketRequest request)
         {
+            var ticket = new Ticket
+            {
+                UserId = request.UserId,
+                UserEmail = request.UserEmail,
+                TicketType = request.TicketType,
+                SelectedDays = request.SelectedDays,
+                BookingDate = DateTime.UtcNow
+            };
+
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(BuyTicket), new { id = ticket.Id }, ticket);
         }
 
