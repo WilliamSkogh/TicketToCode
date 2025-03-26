@@ -1,48 +1,57 @@
-/* Applied red & black theme automatically */
-body {
-  background: linear-gradient(to bottom, #000000, #1a0000);
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
+
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 2rem;
+    background: transparent;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
 }
 
-
-.login-container {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); rgba(20, 20, 20, 0.9);
-    padding: 30px;
+/* Login box */
+.login-box {
+    background-color: #0a0a0a;
+    padding: 2.5rem;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
-    width: 350px;
-    text-align: center;
-    margin: auto;
-    margin-top: 50px;
-    border: 2px solid #ff00ff;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
 }
 
-input, button {
+/* Inputs & labels */
+.login-box input {
     width: 100%;
-    margin-top: 10px;
-    padding: 12px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ff0000;
     border-radius: 5px;
-    border: none;
+    background-color: #1a1a1a;
+    color: white;
     font-size: 1rem;
 }
 
-input {
-    background-color: #1a0000000; #222;
-    color: #ff0000fff;
-    text-align: center;
-}
-
-button {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #ff00ff, #ff6600);
-    color: #ff0000fff;
-    cursor: pointer;
+/* Buttons */
+.login-box button {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
     font-weight: bold;
-    text-transform: uppercase;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background: linear-gradient(to bottom, #1a0000000, #1a0000); linear-gradient(to right, #ff6600, #ff00ff);
-    box-shadow: 0 0 10px #ff00ff;
+.login-box button:hover {
+    background-color: #cc0000;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
 }

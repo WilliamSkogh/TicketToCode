@@ -1,0 +1,83 @@
+
+.page-wrapper {
+    position: relative;
+    margin-top: 5rem;
+    padding: 2rem;
+    max-width: 100%;
+    min-height: 100vh;
+    background: transparent;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Widget högst upp till höger men lite längre ner */
+.ticket-stats-box {
+    position: absolute;
+    top: 6rem;
+    right: 2rem;
+    width: 280px;
+    background-color: #000;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
+    z-index: 5;
+    text-align: center;
+}
+
+/* Centrera formuläret och ge det glow + spacing */
+.ticket-form {
+    background-color: #0a0a0a;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    color: white;
+    width: 100%;
+    max-width: 600px;
+    margin: 10rem auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Inputs och kontroller */
+select, input[type="checkbox"], button {
+    font-size: 1rem;
+}
+
+select {
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: white;
+    border: 1px solid #ff0000;
+}
+
+input[type="checkbox"] {
+    accent-color: red;
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
+}
+
+label {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    color: white;
+}
+
+button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+}
+
+button:hover {
+    background-color: #cc0000;
+}

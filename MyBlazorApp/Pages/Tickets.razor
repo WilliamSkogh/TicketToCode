@@ -5,8 +5,14 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject EventService EventService
 
+<head>
+    <link rel="stylesheet" href="css/ticket.css">
+    <link rel="stylesheet" href="css/Background.css">
+</head>
 <h3>Tickets</h3>
 
+<div class="ticket-page">
+    <div class="ticket-form">
 <label for="ticketType">Hur många dagar?:</label>
 <select @bind="_selectedTicketType" id="ticketType">
     <option value="1">1 dag</option>
@@ -43,7 +49,7 @@
 {
     <p style="color: red;">@_errorMessage</p>
 }
-
+</div>
 <div class="ticket-stats-box">
     <h3>Sålda biljetter per dag</h3>
 
@@ -170,4 +176,4 @@
         public DaySelection Value { get; set; }
     }
     }
-    
+    </div>

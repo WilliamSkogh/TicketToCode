@@ -1,0 +1,57 @@
+
+.hero-section {
+    background: url('../Pictures/goofyahhrave.jpg') no-repeat center center/cover;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.index-content {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: white;
+    background-color: #0a0a0a;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.index-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ff0000;
+}
+
+.index-content p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.index-content a {
+    display: inline-block;
+    margin-top: 2rem;
+    background: #ff0000;
+    padding: 0.8rem 1.6rem;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.index-content a:hover {
+    background-color: #cc0000;
+}
+
+.event-gallery {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.event-gallery img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}

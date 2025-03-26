@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="css/register.css">
     <link rel="stylesheet" href="css/Background.css">
 </head>
-<div class="register-container">
+
+<div class="page-wrapper">
+    <div class="register-box">
 <h3>Registrera dig</h3>
 
 @if (!string.IsNullOrEmpty(successMessage))
@@ -22,6 +24,7 @@
 <input @bind="password" type="password" />
 <button @onclick="RegisterUser">Registrera</button>
 </div>
+    </div>
 
 @code {
     private string username = "";
