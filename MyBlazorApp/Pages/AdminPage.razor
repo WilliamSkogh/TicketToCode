@@ -134,7 +134,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            successMessage = "✅ Eventet har skapats!";
+            successMessage = "Eventet har skapats!";
             newEvent = new Event
             {
                 Name = "",
@@ -149,7 +149,7 @@
         else
         {
             var error = await response.Content.ReadAsStringAsync();
-            successMessage = $"❌ Fel: {response.StatusCode} – {error}";
+            successMessage = $"Fel: {response.StatusCode} – {error}";
         }
     }
 
@@ -163,7 +163,7 @@
         }
         else
         {
-            successMessage = $"❌ Misslyckades att ta bort event med id {id}";
+            successMessage = $" Misslyckades att ta bort event med id {id}";
         }
     }
 
