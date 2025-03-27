@@ -60,9 +60,6 @@
                 </div>
             }
         </div>
-
-        <h5 class="ticket-debug">Debug: JSON-data</h5>
-        <pre>@JsonSerializer.Serialize(tickets, new JsonSerializerOptions { WriteIndented = true })</pre>
     }
 </div>
 
@@ -131,4 +128,4 @@
         DaySelection.Sunday => "Söndag",
         _ => day.ToString()
     };
-}
+}}
